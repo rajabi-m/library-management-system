@@ -3,6 +3,7 @@ package org.example;
 import org.example.models.Book;
 import org.example.models.BookStatus;
 import org.example.models.Library;
+import org.example.models.LinkedList;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,5 +20,18 @@ public class Main {
         Book bookToUpdate = library.getBooksByTitle("1984").get(0);
         library.updateBookStatus(bookToUpdate, BookStatus.Borrowed);
         library.printBooks();
+
+
+        // Testing linked list
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        linkedList.add(1);
+        linkedList.add(2);
+        linkedList.add(3);
+        linkedList.remove(2);
+
+        for (Integer integer : linkedList) {
+            System.out.println("int:"+ integer);
+        }
+
     }
 }
