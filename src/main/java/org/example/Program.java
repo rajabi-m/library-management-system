@@ -5,7 +5,10 @@ import org.example.model.BookStatus;
 import org.example.model.Library;
 import org.example.model.LinkedList;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
@@ -24,8 +27,9 @@ public class Program {
             new CommandTemplate("Sort books by release year", "Sort all books by release year", Program::sortBooksByReleaseYearCommand),
     };
 
-    private static final String booksFile = "books.txt";
-    private static final String outputFile = "output.txt";
+    // using target/ folder to store files, so they are ignored by git
+    private static final String booksFile = "target/books.txt";
+    private static final String outputFile = "target/output.txt";
 
     private static final Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
@@ -53,7 +57,13 @@ public class Program {
 
         try {
             String result = commands[choice - 1].function.call();
-            System.out.println(result);
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            bufferedWriter.write("Operation: " + commands[choice - 1].commandName + "\n");
+            bufferedWriter.write("Result:\n");
+            bufferedWriter.write(result);
+            bufferedWriter.close();
+
         } catch (Exception exception){
             System.out.println("An error occurred: " + exception.getMessage());
         }
