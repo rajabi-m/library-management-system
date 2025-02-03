@@ -91,6 +91,10 @@ public class LinkedList<T> implements Iterable<T>{
         }
     }
 
+    public T getHead() {
+        return head.data;
+    }
+
     private class Node{
         private T data;
         private Node next;
