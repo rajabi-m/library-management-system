@@ -91,7 +91,35 @@ public class LinkedList<T> implements Iterable<T>{
         }
     }
 
+    public boolean contains(T value){
+        Node current = this.head;
+        while (current != null) {
+            if (current.data.equals(value)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    public T get(int index){
+        Node result = this.head;
+        while (index > 0 && result != null){
+            result = result.next;
+            index --;
+        }
+
+        if (result == null){
+            return null;
+        }
+
+        return result.data;
+    }
+
     public T getHead() {
+        if (this.head == null){
+            return null;
+        }
         return head.data;
     }
 
