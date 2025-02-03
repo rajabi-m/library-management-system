@@ -7,8 +7,6 @@ import org.example.model.LinkedList;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
