@@ -105,14 +105,13 @@ public class Program {
         System.out.print("Enter book status (Exist, Borrowed, Banned): ");
         BookStatus status = BookStatus.valueOf(scanner.nextLine());
 
-        for (Book book : library.getBooks()) {
-            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
-                library.updateBookStatus(book, status);
-                return "Book '"+ title +"' of '"+ author +"' status updated to '"+ status +"'!";
-            }
+        var book = library.getBook(title, author);
+        if (book == null){
+            return "Book '"+ title +"' of '"+ author +"' not found!";
         }
 
-        return "Book '"+ title +"' of '"+ author +"' not found!";
+        library.updateBookStatus(book, status);
+        return "Book '"+ title +"' of '"+ author +"' status updated to '"+ status +"'!";
     }
 
     private static String removeBookCommand() {
@@ -121,14 +120,13 @@ public class Program {
         System.out.print("Enter book author: ");
         String author = scanner.nextLine();
 
-        for (Book book : library.getBooks()) {
-            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
-                library.removeBook(book);
-                return "Book '"+ title +"' of '"+ author +"' removed successfully!";
-            }
+        var book = library.getBook(title, author);
+        if (book == null){
+            return "Book '"+ title +"' of '"+ author +"' not found!";
         }
 
-        return "Book '"+ title +"' of '"+ author +"' not found!";
+        library.removeBook(book);
+        return "Book '"+ title +"' of '"+ author +"' removed successfully!";
     }
 
     private static String addBookCommand() {
