@@ -1,5 +1,6 @@
 package org.example.models;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class LinkedList<T> implements Iterable<T>{
@@ -66,8 +67,32 @@ public class LinkedList<T> implements Iterable<T>{
         };
     }
 
+    public void sort(Comparator<T> comparator){
+        Node current = this.head;
+        Node index = null;
+        T temp;
+
+        if (this.head == null) {
+            return;
+        }
+
+        // Bubble sort
+        while (current != null) {
+            index = current.next;
+            while (index != null) {
+                if (comparator.compare(current.data, index.data) > 0) {
+                    temp = current.data;
+                    current.data = index.data;
+                    index.data = temp;
+                }
+                index = index.next;
+            }
+            current = current.next;
+        }
+    }
+
     private class Node{
-        private final T data;
+        private T data;
         private Node next;
 
         public Node(T data){
