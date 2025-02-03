@@ -1,4 +1,4 @@
-package org.example.models;
+package org.example.model;
 
 public enum BookStatus {
     Exist,

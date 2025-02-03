@@ -1,9 +1,9 @@
 package org.example;
 
-import org.example.models.Book;
-import org.example.models.BookStatus;
-import org.example.models.Library;
-import org.example.models.LinkedList;
+import org.example.model.Book;
+import org.example.model.BookStatus;
+import org.example.model.Library;
+import org.example.model.LinkedList;
 
 public class Main {
     public static void main(String[] args) {
