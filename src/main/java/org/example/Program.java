@@ -10,6 +10,10 @@ import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 public class Program {
+    private static final String welcomeText = """
+            welcome to the library!
+            Please choose an option:
+            """;
     private static final CommandTemplate[] commands = {
             new CommandTemplate("Add a book", "Add a book to the library", Program::addBookCommand),
             new CommandTemplate("Remove a book", "Remove a book from the library", Program::removeBookCommand),
@@ -20,10 +24,15 @@ public class Program {
             new CommandTemplate("Sort books by release year", "Sort all books by release year", Program::sortBooksByReleaseYearCommand),
     };
 
+    private static final String booksFile = "books.txt";
+    private static final String outputFile = "output.txt";
+
     private static final Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        Utils.readBooksFromFileAndAddToLibrary(booksFile, library);
+
         printCommandList();
         boolean success = false;
         while (!success){
@@ -32,6 +41,8 @@ public class Program {
             scanner.nextLine();
             success = handleMenuChoice(choice);
         }
+
+        Utils.writeLibraryBooksToFile(library, booksFile);
     }
 
     private static boolean handleMenuChoice(int choice){
@@ -127,8 +138,9 @@ public class Program {
     }
 
     private static void printCommandList(){
+        System.out.print(welcomeText);
         for (int i = 0; i < commands.length; i++) {
-            System.out.println((i + 1) + ". " + commands[i].commandName + " - " + commands[i].commandDescription);
+            System.out.println("    " + (i + 1) + ". " + commands[i].commandName + " - " + commands[i].commandDescription);
         }
     }
 
