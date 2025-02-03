@@ -69,7 +69,7 @@ public class LinkedList<T> implements Iterable<T>{
 
     public void sort(Comparator<T> comparator){
         Node current = this.head;
-        Node index = null;
+        Node index;
         T temp;
 
         if (this.head == null) {

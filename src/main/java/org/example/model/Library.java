@@ -23,12 +23,6 @@ public class Library {
         book.setStatus(status);
     }
 
-    public void printBooks() {
-        for (Book book : this.books) {
-            System.out.println(book);
-        }
-    }
-
     public LinkedList<Book> getBooks() {
         return this.books;
     }
