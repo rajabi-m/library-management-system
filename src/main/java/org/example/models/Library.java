@@ -1,14 +1,13 @@
 package org.example.models;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Library {
-    private final ArrayList<Book> books;
+    private final LinkedList<Book> books;
 
     // Constructor
     public Library() {
-        this.books = new ArrayList<>();
+        this.books = new LinkedList<>();
     }
 
     // Methods
@@ -30,12 +29,12 @@ public class Library {
         }
     }
 
-    public ArrayList<Book> getBooks() {
+    public LinkedList<Book> getBooks() {
         return this.books;
     }
 
-    public ArrayList<Book> getBooksByTitle(String title){
-        ArrayList<Book> output = new ArrayList<>();
+    public LinkedList<Book> getBooksByTitle(String title){
+        var output = new LinkedList<Book>();
         for (Book book : this.books) {
             if (book.getTitle().equals(title)) {
                 output.add(book);
@@ -44,8 +43,8 @@ public class Library {
         return output;
     }
 
-    public ArrayList<Book> getBooksByAuthor(String author){
-        ArrayList<Book> output = new ArrayList<>();
+    public LinkedList<Book> getBooksByAuthor(String author){
+        var output = new LinkedList<Book>();
         for (Book book : this.books) {
             if (book.getAuthor().equals(author)) {
                 output.add(book);

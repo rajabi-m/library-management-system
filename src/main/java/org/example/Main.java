@@ -17,8 +17,10 @@ public class Main {
         library.addBook(book3);
         library.addBook(book4);
         library.sortBooksByReleaseYear();
-        Book bookToUpdate = library.getBooksByTitle("1984").get(0);
+        Book bookToUpdate = library.getBooksByTitle("1984").getHead();
         library.updateBookStatus(bookToUpdate, BookStatus.Borrowed);
+        Book bookToRemove = library.getBooksByTitle("The Great Gatsby").getHead();
+        library.removeBook(bookToRemove);
         library.printBooks();
 
 
