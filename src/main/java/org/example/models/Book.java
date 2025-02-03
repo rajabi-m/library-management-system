@@ -2,9 +2,9 @@ package org.example.models;
 
 public class Book {
     // Fields
-    private String title;
-    private String author;
-    private int releaseYear;
+    private final String title;
+    private final String author;
+    private final int releaseYear;
     private BookStatus status;
 
     // Constructor
@@ -15,8 +15,7 @@ public class Book {
         this.status = status;
     }
 
-    // Getters
-
+    // Methods
     public String getTitle() {
         return title;
     }
@@ -31,5 +30,19 @@ public class Book {
 
     public BookStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(BookStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", releaseYear=" + releaseYear +
+                ", status=" + status +
+                '}';
     }
 }
