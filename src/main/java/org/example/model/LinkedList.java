@@ -68,26 +68,48 @@ public class LinkedList<T> implements Iterable<T>{
     }
 
     public void sort(Comparator<T> comparator){
-        Node current = this.head;
-        Node index;
-        T temp;
+        Node firstBefore = null;
+        Node first = this.head;
+        Node secondBefore = null;
+        Node second = null;
 
         if (this.head == null) {
             return;
         }
 
         // Bubble sort
-        while (current != null) {
-            index = current.next;
-            while (index != null) {
-                if (comparator.compare(current.data, index.data) > 0) {
-                    temp = current.data;
-                    current.data = index.data;
-                    index.data = temp;
+        while (first != null) {
+            second = first.next;
+            secondBefore = first;
+            while (second != null) {
+                if (comparator.compare(first.data, second.data) > 0) {
+                    if (first != this.head) {
+                        firstBefore.next = second;
+                    }
+                    else {
+                        this.head = second;
+                    }
+
+                    if (first.next != second){
+                        secondBefore.next = first;
+                        Node tmp = first.next;
+                        first.next = second.next;
+                        second.next = tmp;
+                    }
+                    else {
+                        first.next = second.next;
+                        second.next = first;
+                    }
+
+                    Node temp = first;
+                    first = second;
+                    second = temp;
                 }
-                index = index.next;
+                secondBefore = second;
+                second = second.next;
             }
-            current = current.next;
+            firstBefore = first;
+            first = first.next;
         }
     }
 
