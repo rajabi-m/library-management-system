@@ -83,24 +83,7 @@ public class LinkedList<T> implements Iterable<T>{
             secondBefore = first;
             while (second != null) {
                 if (comparator.compare(first.data, second.data) > 0) {
-                    if (first != this.head) {
-                        firstBefore.next = second;
-                    }
-                    else {
-                        this.head = second;
-                    }
-
-                    if (first.next != second){
-                        secondBefore.next = first;
-                        Node tmp = first.next;
-                        first.next = second.next;
-                        second.next = tmp;
-                    }
-                    else {
-                        first.next = second.next;
-                        second.next = first;
-                    }
-
+                    swapNodes(first, firstBefore, second, secondBefore);
                     Node temp = first;
                     first = second;
                     second = temp;
@@ -110,6 +93,26 @@ public class LinkedList<T> implements Iterable<T>{
             }
             firstBefore = first;
             first = first.next;
+        }
+    }
+
+    private void swapNodes(Node first, Node firstBefore, Node second, Node secondBefore) {
+        if (first != this.head) {
+            firstBefore.next = second;
+        }
+        else {
+            this.head = second;
+        }
+
+        if (first.next != second){
+            secondBefore.next = first;
+            Node tmp = first.next;
+            first.next = second.next;
+            second.next = tmp;
+        }
+        else {
+            first.next = second.next;
+            second.next = first;
         }
     }
 
