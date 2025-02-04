@@ -10,22 +10,38 @@ public class Library {
         this.books = new LinkedList<>();
     }
 
+    public Library(LinkedList<Book> books) {
+        this.books = books;
+    }
+
     // Methods
-    public void addBook(Book book) {
-        for (Book b : this.books) {
-            if (b.getTitle().equals(book.getTitle()) && b.getAuthor().equals(book.getAuthor())) {
-                throw new RuntimeException("This author have a book with the same title already in the library.");
-            }
+    public String addBook(Book book) {
+        if (findBook(book.getTitle(), book.getAuthor(), book.getReleaseYear()) != null) {
+            return "This book already exists in the library!";
         }
+
         this.books.add(book);
+        return "The book was successfully added to the library!";
     }
 
-    public void removeBook(Book book) {
+    public String removeBook(String title, String author, int releaseYear) {
+        Book book = findBook(title, author, releaseYear);
+        if (book == null) {
+            return "The book was not found in the library!";
+        }
+
         this.books.remove(book);
+        return "The book was successfully removed from the library!";
     }
 
-    public void updateBookStatus(Book book, BookStatus status) {
+    public String updateBookStatus(String title, String author, int releaseYear, BookStatus status) {
+        Book book = findBook(title, author, releaseYear);
+        if (book == null) {
+            return "The book was not found in the library!";
+        }
+
         book.setStatus(status);
+        return "The book status was successfully updated!";
     }
 
     public LinkedList<Book> getBooks() {
@@ -52,10 +68,10 @@ public class Library {
         return output;
     }
 
-    // Every book is unique by title and author
-    public Book getBook(String title, String author){
+    // Every book is unique by title and author & release year
+    public Book findBook(String title, String author, int releaseYear){
         for (Book book : this.books) {
-            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
+            if (book.getTitle().equals(title) && book.getAuthor().equals(author) && book.getReleaseYear() == releaseYear) {
                 return book;
             }
         }
