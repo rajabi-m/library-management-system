@@ -126,4 +126,13 @@ public class LinkedList<T> implements Iterable<T>{
             this.next = null;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        for (T item : this) {
+            output.append(item).append("\n");
+        }
+        return output.toString();
+    }
 }
