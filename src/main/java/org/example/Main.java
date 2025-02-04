@@ -35,5 +35,17 @@ public class Main {
             System.out.println("int:"+ integer);
         }
 
+        // Testing linked list sort
+        LinkedList<Integer> linkedList2 = new LinkedList<>();
+        linkedList2.add(3);
+        linkedList2.add(2);
+        linkedList2.add(1);
+        linkedList2.sort(Integer::compareTo);
+
+        System.out.println("Sorted linked list:");
+        for (Integer integer : linkedList2) {
+            System.out.println("int:"+ integer);
+        }
+
     }
 }
