@@ -148,6 +148,16 @@ public class LinkedList<T> implements Iterable<T>{
         return head.data;
     }
 
+    public int size() {
+        int size = 0;
+        Node current = this.head;
+        while (current != null) {
+            size++;
+            current = current.next;
+        }
+        return size;
+    }
+
     private class Node{
         private final T data;
         private Node next;
