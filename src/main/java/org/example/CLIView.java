@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 public class CLIView {
-    private final String welcomeText = """
+    private static final String welcomeText = """
             welcome to the library!
             Please choose an option:
             """;
@@ -38,7 +38,7 @@ public class CLIView {
         this.scanner = new Scanner(inputStream);
     }
 
-    public void run(String[] args) {
+    public void run() {
         printCommandList();
         while (isProgramRunning){
             System.out.print("> ");
@@ -106,10 +106,13 @@ public class CLIView {
         String title = scanner.nextLine();
         System.out.print("Enter book author: ");
         String author = scanner.nextLine();
+        System.out.print("Enter book release year: ");
+        int releaseYear = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Enter book status (Exist, Borrowed, Banned): ");
         BookStatus status = BookStatus.valueOf(scanner.nextLine());
 
-        var book = library.getBook(title, author);
+        var book = library.findBook(title, author, releaseYear);
         if (book == null){
             return "Book '"+ title +"' of '"+ author +"' not found!";
         }
@@ -123,8 +126,11 @@ public class CLIView {
         String title = scanner.nextLine();
         System.out.print("Enter book author: ");
         String author = scanner.nextLine();
+        System.out.println("Enter book release year: ");
+        int releaseYear = scanner.nextInt();
 
-        var book = library.getBook(title, author);
+        var book = library.findBook(title, author, releaseYear);
+
         if (book == null){
             return "Book '"+ title +"' of '"+ author +"' not found!";
         }
@@ -153,6 +159,7 @@ public class CLIView {
             System.out.println("    " + (i + 1) + ". " + commands[i].commandName + " - " + commands[i].commandDescription);
         }
     }
+
 
     private record CommandTemplate(String commandName, String commandDescription, Callable<String> function) {}
 }

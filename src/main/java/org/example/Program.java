@@ -16,7 +16,7 @@ public class Program {
 
         var library = loadLibrary();
         CLIView cliView = new CLIView(library, System.in);
-        cliView.run(args);
+        cliView.run();
 
         saveLibrary(library);
     }

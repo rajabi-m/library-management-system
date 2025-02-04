@@ -12,11 +12,10 @@ public class Library {
 
     // Methods
     public void addBook(Book book) {
-        for (Book b : this.books) {
-            if (b.getTitle().equals(book.getTitle()) && b.getAuthor().equals(book.getAuthor())) {
-                throw new RuntimeException("This author have a book with the same title already in the library.");
-            }
+        if (findBook(book.getTitle(), book.getAuthor(), book.getReleaseYear()) != null) {
+            throw new RuntimeException("This book already exists in the library!");
         }
+
         this.books.add(book);
     }
 
@@ -52,10 +51,10 @@ public class Library {
         return output;
     }
 
-    // Every book is unique by title and author
-    public Book getBook(String title, String author){
+    // Every book is unique by title and author & release year
+    public Book findBook(String title, String author, int releaseYear){
         for (Book book : this.books) {
-            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
+            if (book.getTitle().equals(title) && book.getAuthor().equals(author) && book.getReleaseYear() == releaseYear) {
                 return book;
             }
         }
