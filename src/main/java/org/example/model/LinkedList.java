@@ -26,27 +26,28 @@ public class LinkedList<T> implements Iterable<T>{
         current.next = newNode;
     }
 
-    public void remove(T data) {
+    public boolean remove(T data) {
         Node current = this.head;
 
         if (current == null) {
-            return;
+            return false;
         }
 
         if (current.data.equals(data)) {
             this.head = current.next;
-            return;
+            return true;
         }
 
         while (current.next != null) {
             if (current.next.data.equals(data)) {
                 current.next = current.next.next;
-                return;
+                return true;
             }
             current = current.next;
         }
-    }
 
+        return false;
+    }
 
     @Override
     public Iterator<T> iterator() {

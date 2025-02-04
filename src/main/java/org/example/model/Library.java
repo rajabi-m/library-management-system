@@ -1,85 +1,78 @@
 package org.example.model;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Library {
-    private final LinkedList<Book> books;
+    private final LinkedList<Asset> assets;
 
     // Constructor
     public Library() {
-        this.books = new LinkedList<>();
+        this.assets = new LinkedList<>();
     }
 
-    public Library(LinkedList<Book> books) {
-        this.books = books;
+    public Library(LinkedList<Asset> assets) {
+        this.assets = assets;
     }
 
     // Methods
-    public String addBook(Book book) {
-        if (findBook(book.getTitle(), book.getAuthor(), book.getReleaseYear()) != null) {
-            return "This book already exists in the library!";
+    public String addAsset(Asset asset) {
+        if (assets.contains(asset)) {
+            return "This asset already exists in the library!";
         }
 
-        this.books.add(book);
-        return "The book was successfully added to the library!";
+        this.assets.add(asset);
+        return "The asset was successfully added to the library!";
     }
 
-    public String removeBook(String title, String author, int releaseYear) {
-        Book book = findBook(title, author, releaseYear);
-        if (book == null) {
-            return "The book was not found in the library!";
-        }
+    public String removeAsset(Asset asset) {
+        if (this.assets.remove(asset))
+            return "The asset was successfully removed from the library!";
 
-        this.books.remove(book);
-        return "The book was successfully removed from the library!";
+        return "The asset was not found in the library!";
     }
 
-    public String updateBookStatus(String title, String author, int releaseYear, BookStatus status) {
-        Book book = findBook(title, author, releaseYear);
-        if (book == null) {
-            return "The book was not found in the library!";
-        }
-
-        book.setStatus(status);
-        return "The book status was successfully updated!";
+    public String updateAssetStatus(Asset asset, AssetStatus status) {
+        asset.setStatus(status);
+        return "The asset status was successfully updated!";
     }
 
-    public LinkedList<Book> getBooks() {
-        return this.books;
-    }
-
-    public LinkedList<Book> getBooksByTitle(String title){
-        var output = new LinkedList<Book>();
-        for (Book book : this.books) {
-            if (book.getTitle().equals(title)) {
-                output.add(book);
+    public ArrayList<Asset> getAssetsByTitle(String title){
+        var output = new ArrayList<Asset>();
+        for (Asset asset : this.assets) {
+            if (asset.getTitle().equals(title)) {
+                output.add(asset);
             }
         }
         return output;
     }
 
-    public LinkedList<Book> getBooksByAuthor(String author){
-        var output = new LinkedList<Book>();
-        for (Book book : this.books) {
-            if (book.getAuthor().equals(author)) {
-                output.add(book);
-            }
-        }
-        return output;
+    public LinkedList<Asset> getAssets() {
+        return assets;
     }
 
-    // Every book is unique by title and author & release year
-    public Book findBook(String title, String author, int releaseYear){
-        for (Book book : this.books) {
-            if (book.getTitle().equals(title) && book.getAuthor().equals(author) && book.getReleaseYear() == releaseYear) {
-                return book;
-            }
-        }
-        return null;
-    }
+    //    public ArrayList<Asset> getBooksByAuthor(String author){
+//        var output = new ArrayList<Asset>();
+//        for (Asset asset : this.assets) {
+//            if (asset.getAuthor().equals(author)) {
+//                output.add(asset);
+//            }
+//        }
+//        return output;
+//    }
 
-    public void sortBooksByReleaseYear() {
-        this.books.sort(Comparator.comparingInt(Book::getReleaseYear));
-    }
+//    // Every book is unique by title and author & release year
+//    public Book findBook(String title, String author, int releaseYear){
+//        for (Book book : this.assets) {
+//            if (book.getTitle().equals(title) && book.getAuthor().equals(author) && book.getReleaseYear() == releaseYear) {
+//                return book;
+//            }
+//        }
+//        return null;
+//    }
+
+//    public void sortBooksByReleaseYear() {
+//        this.assets.sort(Comparator.comparingInt(Book::getReleaseYear));
+//    }
 
 }

@@ -1,6 +1,6 @@
 package org.example.model;
 
-public enum BookStatus {
+public enum AssetStatus {
     Exist,
     Borrowed,
     Banned

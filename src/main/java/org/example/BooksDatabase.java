@@ -1,7 +1,7 @@
 package org.example;
 
 import org.example.model.Book;
-import org.example.model.BookStatus;
+import org.example.model.AssetStatus;
 import org.example.model.LinkedList;
 
 import java.io.BufferedWriter;
@@ -47,7 +47,7 @@ public class BooksDatabase {
                         new Book(bookData[0],
                                 bookData[1],
                                 Integer.parseInt(bookData[2]),
-                                BookStatus.valueOf(bookData[3])
+                                AssetStatus.valueOf(bookData[3])
                         )
                 );
             }

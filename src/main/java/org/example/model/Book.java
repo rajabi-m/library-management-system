@@ -2,15 +2,13 @@ package org.example.model;
 
 import java.util.Objects;
 
-public class Book {
+public class Book extends Asset {
     // Fields
-    private final String title;
     private final String author;
     private final int releaseYear;
-    private BookStatus status;
 
     // Constructor
-    public Book(String title, String author, int releaseYear, BookStatus status) {
+    public Book(String title, String author, int releaseYear, AssetStatus status) {
         this.title = title;
         this.author = author;
         this.releaseYear = releaseYear;
@@ -28,14 +26,6 @@ public class Book {
 
     public int getReleaseYear() {
         return releaseYear;
-    }
-
-    public BookStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookStatus status) {
-        this.status = status;
     }
 
     @Override
