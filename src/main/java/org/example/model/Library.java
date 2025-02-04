@@ -10,21 +10,38 @@ public class Library {
         this.books = new LinkedList<>();
     }
 
+    public Library(LinkedList<Book> books) {
+        this.books = books;
+    }
+
     // Methods
-    public void addBook(Book book) {
+    public String addBook(Book book) {
         if (findBook(book.getTitle(), book.getAuthor(), book.getReleaseYear()) != null) {
-            throw new RuntimeException("This book already exists in the library!");
+            return "This book already exists in the library!";
         }
 
         this.books.add(book);
+        return "The book was successfully added to the library!";
     }
 
-    public void removeBook(Book book) {
+    public String removeBook(String title, String author, int releaseYear) {
+        Book book = findBook(title, author, releaseYear);
+        if (book == null) {
+            return "The book was not found in the library!";
+        }
+
         this.books.remove(book);
+        return "The book was successfully removed from the library!";
     }
 
-    public void updateBookStatus(Book book, BookStatus status) {
+    public String updateBookStatus(String title, String author, int releaseYear, BookStatus status) {
+        Book book = findBook(title, author, releaseYear);
+        if (book == null) {
+            return "The book was not found in the library!";
+        }
+
         book.setStatus(status);
+        return "The book status was successfully updated!";
     }
 
     public LinkedList<Book> getBooks() {

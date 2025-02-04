@@ -30,11 +30,7 @@ public class Program {
     }
 
     private static Library loadLibrary() {
-        Library library = new Library();
         LinkedList<Book> books = booksDatabase.readBooksFromFile();
-        for (Book book : books) {
-            library.addBook(book);
-        }
-        return library;
+        return new Library(books);
     }
 }

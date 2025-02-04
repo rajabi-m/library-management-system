@@ -112,13 +112,8 @@ public class CLIView {
         System.out.print("Enter book status (Exist, Borrowed, Banned): ");
         BookStatus status = BookStatus.valueOf(scanner.nextLine());
 
-        var book = library.findBook(title, author, releaseYear);
-        if (book == null){
-            return "Book '"+ title +"' of '"+ author +"' not found!";
-        }
 
-        library.updateBookStatus(book, status);
-        return "Book '"+ title +"' of '"+ author +"' status updated to '"+ status +"'!";
+        return library.updateBookStatus(title, author, releaseYear, status);
     }
 
     private String removeBookCommand() {
@@ -129,14 +124,7 @@ public class CLIView {
         System.out.println("Enter book release year: ");
         int releaseYear = scanner.nextInt();
 
-        var book = library.findBook(title, author, releaseYear);
-
-        if (book == null){
-            return "Book '"+ title +"' of '"+ author +"' not found!";
-        }
-
-        library.removeBook(book);
-        return "Book '"+ title +"' of '"+ author +"' removed successfully!";
+        return library.removeBook(title, author, releaseYear);
     }
 
     private String addBookCommand() {
@@ -148,9 +136,8 @@ public class CLIView {
         int releaseYear = scanner.nextInt();
 
         Book newBook = new Book(title, author, releaseYear, BookStatus.Exist);
-        library.addBook(newBook);
 
-        return "Book '"+ title +"' added successfully!";
+        return library.addBook(newBook);
     }
 
     private void printCommandList(){

@@ -118,7 +118,7 @@ public class LinkedList<T> implements Iterable<T>{
     }
 
     private class Node{
-        private T data;
+        private final T data;
         private Node next;
 
         public Node(T data){
