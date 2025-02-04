@@ -23,6 +23,7 @@ public class Program {
             new CommandTemplate("Get books by title", "Get all books with a specific title", Program::getBooksByTitleCommand),
             new CommandTemplate("Get books by author", "Get all books by a specific author", Program::getBooksByAuthorCommand),
             new CommandTemplate("Sort books by release year", "Sort all books by release year", Program::sortBooksByReleaseYearCommand),
+            new CommandTemplate("Exit", "Exit the program", Program::exitCommand),
     };
 
     // using target/ folder to store files, so they are ignored by git
@@ -32,25 +33,26 @@ public class Program {
     private static final Library library = new Library();
     private static final Scanner scanner = new Scanner(System.in);
 
+    private static boolean isProgramRunning = true;
+
     public static void main(String[] args) {
         Utils.readBooksFromFileAndAddToLibrary(booksFile, library);
 
         printCommandList();
-        boolean success = false;
-        while (!success){
+        while (isProgramRunning){
             System.out.print("> ");
             int choice = scanner.nextInt();
             scanner.nextLine();
-            success = handleMenuChoice(choice);
+            handleMenuChoice(choice);
         }
 
         Utils.writeLibraryBooksToFile(library, booksFile);
     }
 
-    private static boolean handleMenuChoice(int choice){
+    private static void handleMenuChoice(int choice){
         if (choice < 1 || choice > commands.length){
             System.out.println("Invalid choice!");
-            return false;
+            return;
         }
 
         try {
@@ -65,8 +67,11 @@ public class Program {
         } catch (Exception exception){
             System.out.println("An error occurred: " + exception.getMessage());
         }
+    }
 
-        return true;
+    private static String exitCommand() {
+        isProgramRunning = false;
+        return "Exiting the program!";
     }
 
     private static String sortBooksByReleaseYearCommand() {
