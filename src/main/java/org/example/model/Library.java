@@ -45,29 +45,4 @@ public class Library {
     public LinkedList<Asset> getAssets() {
         return assets;
     }
-
-    //    public ArrayList<Asset> getBooksByAuthor(String author){
-//        var output = new ArrayList<Asset>();
-//        for (Asset asset : this.assets) {
-//            if (asset.getAuthor().equals(author)) {
-//                output.add(asset);
-//            }
-//        }
-//        return output;
-//    }
-
-//    // Every book is unique by title and author & release year
-//    public Book findBook(String title, String author, int releaseYear){
-//        for (Book book : this.assets) {
-//            if (book.getTitle().equals(title) && book.getAuthor().equals(author) && book.getReleaseYear() == releaseYear) {
-//                return book;
-//            }
-//        }
-//        return null;
-//    }
-
-//    public void sortBooksByReleaseYear() {
-//        this.assets.sort(Comparator.comparingInt(Book::getReleaseYear));
-//    }
-
 }

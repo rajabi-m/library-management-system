@@ -46,9 +46,9 @@ public class MainMenuView extends MenuView{
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
-        var books = library.getAssetsByTitle(title);
+        var assets = library.getAssetsByTitle(title);
 
-        return books.toString();
+        return assets.toString();
     }
 
     private String getAllAssetsCommand() {
