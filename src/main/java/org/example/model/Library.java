@@ -1,7 +1,6 @@
 package org.example.model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Library {
     private final LinkedList<Asset> assets;
@@ -16,20 +15,16 @@ public class Library {
     }
 
     // Methods
-    public String addAsset(Asset asset) {
+    public void addAsset(Asset asset) {
         if (assets.contains(asset)) {
-            return "This asset already exists in the library!";
+            return;
         }
 
         this.assets.add(asset);
-        return "The asset was successfully added to the library!";
     }
 
-    public String removeAsset(Asset asset) {
-        if (this.assets.remove(asset))
-            return "The asset was successfully removed from the library!";
-
-        return "The asset was not found in the library!";
+    public void removeAsset(Asset asset) {
+        this.assets.remove(asset);
     }
 
     public String updateAssetStatus(Asset asset, AssetStatus status) {

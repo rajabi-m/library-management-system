@@ -49,4 +49,14 @@ public class Book extends Asset {
     public int hashCode() {
         return Objects.hash(title, author, releaseYear);
     }
+
+    @Override
+    public String toCsv() {
+        return title + "," + author + "," + releaseYear + "," + status;
+    }
+
+    public static Book fromCsv(String csv) {
+        String[] data = csv.split(",");
+        return new Book(data[0], data[1], Integer.parseInt(data[2]), AssetStatus.valueOf(data[3]));
+    }
 }

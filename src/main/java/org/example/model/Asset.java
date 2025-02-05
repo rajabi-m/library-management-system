@@ -15,4 +15,10 @@ public abstract class Asset {
     public String getTitle() {
         return title;
     }
+
+    public abstract String toCsv();
+
+    public static Asset fromCsv(String csv){
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 }

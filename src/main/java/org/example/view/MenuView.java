@@ -1,6 +1,6 @@
-package org.example;
+package org.example.view;
 
-import org.example.model.OutputDisplay;
+import org.example.io.OutputDisplay;
 
 import java.util.Scanner;
 import java.util.concurrent.Callable;
@@ -52,6 +52,10 @@ public abstract class MenuView {
         try {
             String result = commands[choice - 1].function.call();
 
+            if (result == null) {
+                return;
+            }
+
             String output =
                     "Operation: " + commands[choice - 1].commandName + "\n" +
                             "Result:\n" +
@@ -64,7 +68,7 @@ public abstract class MenuView {
         }
     }
 
-    private String availableCommandsString(){
+    protected String availableCommandsString(){
         // Create String with all available commands
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < commands.length; i++) {

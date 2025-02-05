@@ -1,13 +1,13 @@
-package org.example.model;
+package org.example.io;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileDisplay implements OutputDisplay {
+public class FileOutputDisplay implements OutputDisplay {
     private final String filePath;
 
-    public FileDisplay(String filePath) {
+    public FileOutputDisplay(String filePath) {
         this.filePath = filePath;
     }
 

@@ -1,6 +1,9 @@
 package org.example;
 
+import org.example.io.CLIOutputDisplay;
+import org.example.io.FileOutputDisplay;
 import org.example.model.*;
+import org.example.view.MainMenuView;
 
 public class Program {
     // using target/ folder to store files, so they are ignored by git
@@ -9,14 +12,14 @@ public class Program {
 
     private final static boolean debugMode = true;
 
-    private static BooksDatabase booksDatabase;
+    private static AssetLoader assetLoader;
 
 
     public static void main(String[] args) {
         initializeFields();
 
         var library = loadLibrary();
-        var outputDisplay = debugMode ? new CLIOutputStream() : new FileDisplay(outputFilePath);
+        var outputDisplay = debugMode ? new CLIOutputDisplay() : new FileOutputDisplay(outputFilePath);
         MainMenuView mainMenuView = new MainMenuView(library, outputDisplay);
         mainMenuView.run();
 
@@ -24,15 +27,15 @@ public class Program {
     }
 
     private static void saveLibrary(Library library) {
-//        booksDatabase.writeBooksToFile(library.getAssets());
+        assetLoader.writeAssetsToFile(library.getAssets());
     }
 
     private static void initializeFields() {
-        booksDatabase = new BooksDatabase(booksDatabaseFilePath);
+        assetLoader = new AssetLoader(booksDatabaseFilePath);
     }
 
     private static Library loadLibrary() {
-//        LinkedList<Book> books = booksDatabase.readBooksFromFile();
-        return new Library();
+        LinkedList<Asset> assets = assetLoader.readAssetsFromFile();
+        return new Library(assets);
     }
 }
