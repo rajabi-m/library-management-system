@@ -15,19 +15,25 @@ public class Library {
     }
 
     // Methods
-    public void addAsset(Asset asset) {
+    public String addAsset(Asset asset) {
         if (assets.contains(asset)) {
-            return;
+            return "Asset already exists in the library!";
         }
 
         this.assets.add(asset);
+        return "Asset added successfully!";
     }
 
-    public void removeAsset(Asset asset) {
+    public String removeAsset(Asset asset) {
+        if (!this.assets.contains(asset)) {
+            return "Asset does not exist in the library!";
+        }
+
         this.assets.remove(asset);
+        return "Asset removed successfully!";
     }
 
-    public String updateAssetStatus(Asset asset, AssetStatus status) {
+    public String updateAssetStatus(BorrowableAsset asset, AssetStatus status) {
         asset.setStatus(status);
         return "The asset status was successfully updated!";
     }
@@ -42,7 +48,26 @@ public class Library {
         return output;
     }
 
+    public ArrayList<BorrowableAsset> getBorrowableAssetsByTitle(String title){
+        var output = new ArrayList<BorrowableAsset>();
+        for (Asset asset : this.assets) {
+            if (asset.getTitle().equals(title) && asset instanceof BorrowableAsset borrowableAsset) {
+                output.add(borrowableAsset);
+            }
+        }
+        return output;
+    }
+
     public LinkedList<Asset> getAssets() {
         return assets;
+    }
+
+    public ArrayList<Asset> getAssetsByType(String type){
+        var output = new ArrayList<Asset>();
+        for (Asset asset : this.assets) {
+            if (!asset.getClass().getSimpleName().equals(type)) continue;
+            output.add(asset);
+        }
+        return output;
     }
 }

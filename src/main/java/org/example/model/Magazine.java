@@ -2,7 +2,7 @@ package org.example.model;
 
 import java.util.Objects;
 
-public class Magazine extends Asset{
+public class Magazine extends BorrowableAsset{
     private final String publisher;
     private final String releaseDate;
 
@@ -11,6 +11,13 @@ public class Magazine extends Asset{
         this.publisher = publisher;
         this.releaseDate = releaseDate;
         this.status = status;
+    }
+
+    public Magazine(String title, String publisher, String releaseDate) {
+        this.title = title;
+        this.publisher = publisher;
+        this.releaseDate = releaseDate;
+        this.status = AssetStatus.Exist;
     }
 
     public String getPublisher() {

@@ -15,8 +15,8 @@ import java.util.function.Function;
 public class AssetLoader {
     private final String filePath;
     private static final Map<String, Function<String, Asset>> assetParsers = Map.of(
-            Book.class.getName(), Book::fromCsv,
-            Magazine.class.getName(), Magazine::fromCsv
+            Book.class.getSimpleName(), Book::fromCsv,
+            Magazine.class.getSimpleName(), Magazine::fromCsv
     );
 
     public AssetLoader(String filePath) {
@@ -28,7 +28,7 @@ public class AssetLoader {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
 
             for (var asset : assets) {
-                bufferedWriter.write(asset.getClass().getName() + "," + asset.toCsv() + "\n");
+                bufferedWriter.write(asset.getClass().getSimpleName() + "," + asset.toCsv() + "\n");
             }
 
             bufferedWriter.close();
@@ -45,7 +45,7 @@ public class AssetLoader {
 
             while (scanner.hasNextLine()) {
                 String fullCsv = scanner.nextLine();
-                parseLine(fullCsv, assets);
+                assets.add(convertCsvToAsser(fullCsv));
             }
 
             fileReader.close();
@@ -55,7 +55,7 @@ public class AssetLoader {
         return assets;
     }
 
-    private void parseLine(String fullCsv, LinkedList<Asset> assets) {
+    public static Asset convertCsvToAsser(String fullCsv) {
         int firstCommaIndex = fullCsv.indexOf(",");
 
         if (firstCommaIndex == -1) {
@@ -70,7 +70,7 @@ public class AssetLoader {
             throw new RuntimeException("Unsupported asset type: " + assetClassName);
         }
 
-        assets.add(parser.apply(csv));
+        return parser.apply(csv);
     }
 
 }
