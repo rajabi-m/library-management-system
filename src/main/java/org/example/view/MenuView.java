@@ -64,7 +64,7 @@ public abstract class MenuView {
             outputDisplay.display(output);
 
         } catch (Exception exception){
-            outputDisplay.display("An error occurred: " + exception.getMessage());
+            throw new RuntimeException("An error occurred: " + exception.getMessage());
         }
     }
 

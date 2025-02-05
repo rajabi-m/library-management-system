@@ -4,14 +4,21 @@ import java.util.ArrayList;
 
 public class Library {
     private final LinkedList<Asset> assets;
+    private final InvertedIndexMap<String, Asset> invertedIndexMap;
 
     // Constructor
     public Library() {
+        this.invertedIndexMap = new InvertedIndexMap<>();
         this.assets = new LinkedList<>();
     }
 
     public Library(LinkedList<Asset> assets) {
-        this.assets = assets;
+        this.assets = new LinkedList<>();
+        this.invertedIndexMap = new InvertedIndexMap<>();
+
+        for (var asset: assets) {
+            this.addAsset(asset);
+        }
     }
 
     // Methods
@@ -21,6 +28,12 @@ public class Library {
         }
 
         this.assets.add(asset);
+
+        String[] words = asset.getTitle().split(" ");
+        for (String word : words) {
+            if (word.isBlank()) continue;
+            this.invertedIndexMap.add(word, asset);
+        }
         return "Asset added successfully!";
     }
 
@@ -67,6 +80,40 @@ public class Library {
         for (Asset asset : this.assets) {
             if (!asset.getClass().getSimpleName().equals(type)) continue;
             output.add(asset);
+        }
+        return output;
+    }
+
+    public ArrayList<Asset> queryAssets(String query) {
+        ArrayList<Asset> output = null;
+        String[] words = query.split(" ");
+
+        boolean isFirst = true;
+        for (String word : words) {
+            if (word.isBlank()) continue;
+
+            var newAssets = invertedIndexMap.get(word);
+
+            if (isFirst) {
+                if (newAssets == null) return new ArrayList<>();
+                output = new ArrayList<>(newAssets);
+                isFirst = false;
+                continue;
+            }
+
+            output.retainAll(newAssets);
+        }
+
+        if (output == null) output = new ArrayList<>();
+        return output;
+    }
+
+    public ArrayList<BorrowableAsset> queryBorrowableAssets(String query) {
+        ArrayList<BorrowableAsset> output = new ArrayList<>();
+        for (Asset asset : queryAssets(query)) {
+            if (asset instanceof BorrowableAsset borrowableAsset) {
+                output.add(borrowableAsset);
+            }
         }
         return output;
     }

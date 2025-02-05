@@ -84,7 +84,7 @@ public class MainMenuView extends MenuView{
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
-        var assets = shouldBeBorrowable ? library.getBorrowableAssetsByTitle(title) : library.getAssetsByTitle(title);
+        var assets = shouldBeBorrowable ? library.queryBorrowableAssets(title) : library.queryAssets(title);
 
         if (assets.isEmpty()){
             return null;
@@ -96,7 +96,7 @@ public class MainMenuView extends MenuView{
             for (int i = 0; i < assets.size(); i++) {
                 System.out.println((i + 1) + ". " + assets.get(i));
             }
-            System.out.print((assets.size() + 1) + ". " + "Cancel");
+            System.out.println((assets.size() + 1) + ". " + "Cancel");
 
             choice = scanner.nextInt();
             scanner.nextLine();
