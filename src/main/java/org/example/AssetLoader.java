@@ -16,7 +16,8 @@ public class AssetLoader {
     private final String filePath;
     private static final Map<String, Function<String, Asset>> assetParsers = Map.of(
             Book.class.getSimpleName(), Book::fromCsv,
-            Magazine.class.getSimpleName(), Magazine::fromCsv
+            Magazine.class.getSimpleName(), Magazine::fromCsv,
+            Thesis.class.getSimpleName(), Thesis::fromCsv
     );
 
     public AssetLoader(String filePath) {
