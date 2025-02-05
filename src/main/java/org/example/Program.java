@@ -1,14 +1,13 @@
 package org.example;
 
-import org.example.model.Book;
-import org.example.model.FileDisplay;
-import org.example.model.Library;
-import org.example.model.LinkedList;
+import org.example.model.*;
 
 public class Program {
     // using target/ folder to store files, so they are ignored by git
     private static final String booksDatabaseFilePath = "target/books.txt";
     private static final String outputFilePath = "target/output.txt";
+
+    private final static boolean debugMode = true;
 
     private static BooksDatabase booksDatabase;
 
@@ -17,7 +16,8 @@ public class Program {
         initializeFields();
 
         var library = loadLibrary();
-        MainMenuView mainMenuView = new MainMenuView(library, new FileDisplay(outputFilePath));
+        var outputDisplay = debugMode ? new CLIOutputStream() : new FileDisplay(outputFilePath);
+        MainMenuView mainMenuView = new MainMenuView(library, outputDisplay);
         mainMenuView.run();
 
         saveLibrary(library);
