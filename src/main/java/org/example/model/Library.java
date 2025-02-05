@@ -46,7 +46,7 @@ public class Library {
         return "Asset removed successfully!";
     }
 
-    public String updateAssetStatus(BorrowableAsset asset, AssetStatus status) {
+    public String updateAssetStatus(Asset asset, AssetStatus status) {
         asset.setStatus(status);
         return "The asset status was successfully updated!";
     }
@@ -56,16 +56,6 @@ public class Library {
         for (Asset asset : this.assets) {
             if (asset.getTitle().equals(title)) {
                 output.add(asset);
-            }
-        }
-        return output;
-    }
-
-    public ArrayList<BorrowableAsset> getBorrowableAssetsByTitle(String title){
-        var output = new ArrayList<BorrowableAsset>();
-        for (Asset asset : this.assets) {
-            if (asset.getTitle().equals(title) && asset instanceof BorrowableAsset borrowableAsset) {
-                output.add(borrowableAsset);
             }
         }
         return output;
@@ -105,16 +95,6 @@ public class Library {
         }
 
         if (output == null) output = new ArrayList<>();
-        return output;
-    }
-
-    public ArrayList<BorrowableAsset> queryBorrowableAssets(String query) {
-        ArrayList<BorrowableAsset> output = new ArrayList<>();
-        for (Asset asset : queryAssets(query)) {
-            if (asset instanceof BorrowableAsset borrowableAsset) {
-                output.add(borrowableAsset);
-            }
-        }
         return output;
     }
 }

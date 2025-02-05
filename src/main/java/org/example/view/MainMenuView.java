@@ -68,23 +68,23 @@ public class MainMenuView extends MenuView{
     }
 
     private String updateAssetStatusCommand(){
-        var borrowableAsset = getBorrowableAssetFromUser();
+        var asset = getAssetFromUser();
 
-        if (borrowableAsset == null){
+        if (asset == null){
             return "No asset found or selected.";
         }
 
         System.out.println("Enter new status: ");
         String status = scanner.nextLine();
 
-        return library.updateAssetStatus(borrowableAsset, AssetStatus.valueOf(status));
+        return library.updateAssetStatus(asset, AssetStatus.valueOf(status));
     }
 
-    private Asset getAssetFromUser(boolean shouldBeBorrowable){
+    private Asset getAssetFromUser(){
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
-        var assets = shouldBeBorrowable ? library.queryBorrowableAssets(title) : library.queryAssets(title);
+        var assets = library.queryAssets(title);
 
         if (assets.isEmpty()){
             return null;
@@ -107,14 +107,6 @@ public class MainMenuView extends MenuView{
         }
 
         return assets.get(choice - 1);
-    }
-
-    private Asset getAssetFromUser(){
-        return getAssetFromUser(false);
-    }
-
-    private BorrowableAsset getBorrowableAssetFromUser(){
-        return (BorrowableAsset) getAssetFromUser(true);
     }
 
     private String getAssetsByTypeCommand(){

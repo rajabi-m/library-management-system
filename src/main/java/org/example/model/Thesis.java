@@ -14,6 +14,7 @@ public class Thesis extends Asset{
         this.author = author;
         this.supervisor = supervisor;
         this.department = department;
+        this.status = AssetStatus.Banned;
     }
 
     public String getAuthor() {
