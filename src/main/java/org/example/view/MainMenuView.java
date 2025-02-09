@@ -46,11 +46,11 @@ public class MainMenuView extends MenuView{
 
         var assets = library.getAssetsByTitle(title);
 
-        return assets.toString();
+        return convertIterableToHumanReadableString(assets);
     }
 
     private String getAllAssetsCommand() {
-        return library.getAssets().toString();
+        return convertIterableToHumanReadableString(library.getAssets());
     }
 
 
@@ -125,7 +125,7 @@ public class MainMenuView extends MenuView{
             return "No assets found with type: " + type;
         }
 
-        return assets.toString();
+        return convertIterableToHumanReadableString(assets);
     }
 
     private String borrowAssetCommand(){
@@ -171,6 +171,14 @@ public class MainMenuView extends MenuView{
             return "No borrowable assets found";
         }
 
+        return result.toString();
+    }
+
+    private static String convertIterableToHumanReadableString(Iterable<?> iterable){
+        var result = new StringBuilder();
+        for (Object o : iterable){
+            result.append(o.toString()).append('\n');
+        }
         return result.toString();
     }
 }

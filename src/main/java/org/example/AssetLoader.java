@@ -1,11 +1,15 @@
 package org.example;
 
-import org.example.model.*;
+import org.example.model.Asset;
+import org.example.model.Book;
+import org.example.model.Magazine;
+import org.example.model.Thesis;
 
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
@@ -36,8 +40,8 @@ public class AssetLoader {
         }
     }
 
-    public LinkedList<Asset> readAssetsFromFile() {
-        var assets = new LinkedList<Asset>();
+    public ArrayList<Asset> readAssetsFromFile() {
+        var assets = new ArrayList<Asset>();
         try {
             FileReader fileReader = new FileReader(filePath);
             Scanner scanner = new Scanner(fileReader);

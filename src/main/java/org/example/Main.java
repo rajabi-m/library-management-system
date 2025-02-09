@@ -2,9 +2,7 @@ package org.example;
 
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
-import org.example.model.Asset;
 import org.example.model.Library;
-import org.example.model.LinkedList;
 import org.example.view.MainMenuView;
 
 public class Main {
@@ -37,7 +35,7 @@ public class Main {
     }
 
     private static Library loadLibrary() {
-        LinkedList<Asset> assets = assetLoader.readAssetsFromFile();
+        var assets = assetLoader.readAssetsFromFile();
         return new Library(assets);
     }
 }

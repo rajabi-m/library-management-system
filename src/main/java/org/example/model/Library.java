@@ -3,17 +3,17 @@ package org.example.model;
 import java.util.ArrayList;
 
 public class Library {
-    private final LinkedList<Asset> assets;
+    private final ArrayList<Asset> assets;
     private final InvertedIndexMap<String, Asset> invertedIndexMap;
 
     // Constructor
     public Library() {
         this.invertedIndexMap = new InvertedIndexMap<>();
-        this.assets = new LinkedList<>();
+        this.assets = new ArrayList<>();
     }
 
-    public Library(LinkedList<Asset> assets) {
-        this.assets = new LinkedList<>();
+    public Library(ArrayList<Asset> assets) {
+        this.assets = new ArrayList<>();
         this.invertedIndexMap = new InvertedIndexMap<>();
 
         for (var asset: assets) {
@@ -61,7 +61,7 @@ public class Library {
         return output;
     }
 
-    public LinkedList<Asset> getAssets() {
+    public ArrayList<Asset> getAssets() {
         return assets;
     }
 
