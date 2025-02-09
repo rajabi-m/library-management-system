@@ -5,7 +5,7 @@ import org.example.io.FileOutputDisplay;
 import org.example.model.*;
 import org.example.view.MainMenuView;
 
-public class Program {
+public class Main {
     // using target/ folder to store files, so they are ignored by git
     private static final String booksDatabaseFilePath = "target/assets.txt";
     private static final String outputFilePath = "target/output.txt";
