@@ -153,7 +153,7 @@ public class MainMenuView extends MenuView{
         }
 
         asset.setStatus(AssetStatus.Exist);
-        asset.setLastUpdate(LocalDate.now());
+        asset.setReturnTime(LocalDate.now());
         return "Asset successfully brought back";
     }
 

@@ -58,7 +58,7 @@ public class Magazine extends Asset{
                 ", publisher='" + publisher + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", status=" + status +
-                ", lastUpdate=" + lastUpdate +
+                ", lastUpdate=" + returnTime +
                 '}';
     }
 

@@ -1,6 +1,7 @@
 package org.example.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Library {
     private final ArrayList<Asset> assets;
@@ -74,27 +75,15 @@ public class Library {
         return output;
     }
 
-    public ArrayList<Asset> queryAssets(String query) {
+    public List<Asset> queryAssets(String query) {
         ArrayList<Asset> output = null;
-        String[] words = query.split(" ");
-
-        boolean isFirst = true;
-        for (String word : words) {
+        String[] splitResult = query.split(" ");
+        ArrayList<String> words = new ArrayList<>();
+        for (String word : splitResult) {
             if (word.isBlank()) continue;
-
-            var newAssets = invertedIndexMap.get(word);
-
-            if (isFirst) {
-                if (newAssets == null) return new ArrayList<>();
-                output = new ArrayList<>(newAssets);
-                isFirst = false;
-                continue;
-            }
-
-            output.retainAll(newAssets);
+            words.add(word);
         }
 
-        if (output == null) output = new ArrayList<>();
-        return output;
+        return invertedIndexMap.query(words);
     }
 }

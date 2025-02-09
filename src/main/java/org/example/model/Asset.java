@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public abstract class Asset {
     protected String title;
     protected AssetStatus status;
-    protected LocalDate lastUpdate;
+    protected LocalDate returnTime;
 
     public String getTitle() {
         return title;
@@ -19,12 +19,12 @@ public abstract class Asset {
         this.status = status;
     }
 
-    public LocalDate getLastUpdate() {
-        return lastUpdate;
+    public LocalDate getReturnTime() {
+        return returnTime;
     }
 
-    public void setLastUpdate(LocalDate lastUpdate) {
-        this.lastUpdate = lastUpdate;
+    public void setReturnTime(LocalDate returnTime) {
+        this.returnTime = returnTime;
     }
 
     public abstract String display();

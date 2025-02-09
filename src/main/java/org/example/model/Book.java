@@ -41,7 +41,7 @@ public class Book extends Asset {
                 ", author='" + author + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", status=" + status +
-                ", lastUpdate=" + lastUpdate +
+                ", lastUpdate=" + returnTime +
                 '}';
     }
 

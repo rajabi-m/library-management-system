@@ -26,4 +26,24 @@ public class InvertedIndexMap<T, R> {
     public boolean containsKey(T key) {
         return map.containsKey(key);
     }
+
+    public List<R> query(List<T> keys) {
+        boolean isFirst = true;
+        ArrayList<R> output = null;
+        for (var key : keys) {
+            var newResults = get(key);
+
+            if (isFirst) {
+                if (newResults == null) return new ArrayList<>();
+                output = new ArrayList<>(newResults);
+                isFirst = false;
+                continue;
+            }
+
+            output.retainAll(newResults);
+        }
+
+        output = output == null ? new ArrayList<>() : output;
+        return output;
+    }
 }

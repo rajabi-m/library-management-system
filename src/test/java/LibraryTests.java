@@ -1,11 +1,11 @@
-//import org.example.model.Book;
-//import org.example.model.AssetStatus;
-//import org.example.model.Library;
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//public class LibraryTests {
+import org.example.model.Book;
+import org.example.model.AssetStatus;
+import org.example.model.Library;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LibraryTests {
 //    @Test
 //    public void testAddBook(){
 //        Library library = new Library();
@@ -120,7 +120,7 @@
 //        assertEquals("The Hobbit", sortedBooks.get(0).getTitle());
 //        assertEquals("The Lord of the Rings", sortedBooks.get(1).getTitle());
 //    }
-//
-//
-//
-//}
+
+
+
+}
