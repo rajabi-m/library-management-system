@@ -17,13 +17,16 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         initializeFields();
-
         var library = loadLibrary();
+
+        // Create shutdown hook to save program data
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            saveLibrary(library);
+        }));
+
         var outputDisplay = debugMode ? new CLIOutputDisplay() : new FileOutputDisplay(outputFilePath);
         MainMenuView mainMenuView = new MainMenuView(library, outputDisplay);
         mainMenuView.run();
-
-        saveLibrary(library);
     }
 
     private static void saveLibrary(Library library) {

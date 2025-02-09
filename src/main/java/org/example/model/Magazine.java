@@ -4,7 +4,6 @@ import org.example.utils.ParserUtils;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Magazine extends BorrowableAsset{
     private final String publisher;
