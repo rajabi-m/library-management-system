@@ -4,6 +4,7 @@ import org.example.AssetLoader;
 import org.example.io.OutputDisplay;
 import org.example.model.Asset;
 import org.example.model.AssetStatus;
+import org.example.model.BorrowableAsset;
 import org.example.model.Library;
 
 import java.time.LocalDate;
@@ -17,7 +18,6 @@ public class MainMenuView extends MenuView{
     private final CommandTemplate[] commands = {
             new CommandTemplate("Add asset", "Add an asset to the library", this::addAssetCommand),
             new CommandTemplate("Remove asset", "Remove an asset from the library", this::removeAssetCommand),
-            new CommandTemplate("Update asset status", "Update the status of an asset", this::updateAssetStatusCommand),
             new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getBorrowableAssetsStatusCommand),
             new CommandTemplate("Borrow asset", "Borrow an asset of library", this::borrowAssetCommand),
             new CommandTemplate("Bring back asset", "Bring back the asset of library", this::bringBackAssetCommand),
@@ -73,19 +73,6 @@ public class MainMenuView extends MenuView{
         return library.removeAsset(asset);
     }
 
-    private String updateAssetStatusCommand(){
-        var asset = getAssetFromUser();
-
-        if (asset == null){
-            return "No asset found or selected.";
-        }
-
-        System.out.println("Enter new status: ");
-        String status = scanner.nextLine();
-
-        return library.updateAssetStatus(asset, AssetStatus.valueOf(status));
-    }
-
     private Asset getAssetFromUser(){
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
@@ -134,11 +121,11 @@ public class MainMenuView extends MenuView{
             return "No asset found or selected";
         }
 
-        if (asset.getStatus() != AssetStatus.Exist){
+        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
             return "This asset is not available";
         }
 
-        asset.setStatus(AssetStatus.Borrowed);
+        borrowableAsset.setStatus(AssetStatus.Borrowed);
         return "Asset successfully borrowed";
     }
 
@@ -148,12 +135,12 @@ public class MainMenuView extends MenuView{
             return "No asset found or selected";
         }
 
-        if (asset.getStatus() != AssetStatus.Borrowed){
+        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
             return "This asset is not borrowed";
         }
 
-        asset.setStatus(AssetStatus.Exist);
-        asset.setReturnTime(LocalDate.now());
+        borrowableAsset.setStatus(AssetStatus.Exist);
+        borrowableAsset.setReturnTime(LocalDate.now());
         return "Asset successfully brought back";
     }
 
@@ -161,10 +148,10 @@ public class MainMenuView extends MenuView{
         var assets = library.getAssets();
         StringBuilder result = new StringBuilder();
         for (Asset asset : assets) {
-            if (asset.getStatus() == AssetStatus.Banned)
+            if (!(asset instanceof BorrowableAsset borrowableAsset))
                 continue;
 
-            result.append(asset.display()).append(" / ").append(asset.getStatus()).append("\n");
+            result.append(borrowableAsset.display()).append(" / ").append(borrowableAsset.getStatus()).append("\n");
         }
 
         if (assets.size() <= 0){

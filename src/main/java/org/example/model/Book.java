@@ -2,7 +2,7 @@ package org.example.model;
 
 import java.util.Objects;
 
-public class Book extends Asset {
+public class Book extends BorrowableAsset {
     // Fields
     private final String author;
     private final int releaseYear;
@@ -41,7 +41,7 @@ public class Book extends Asset {
                 ", author='" + author + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", status=" + status +
-                ", lastUpdate=" + returnTime +
+                ", returnTime=" + returnTime +
                 '}';
     }
 

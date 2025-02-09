@@ -47,7 +47,7 @@ public class Library {
         return "Asset removed successfully!";
     }
 
-    public String updateAssetStatus(Asset asset, AssetStatus status) {
+    public String updateAssetStatus(BorrowableAsset asset, AssetStatus status) {
         asset.setStatus(status);
         return "The asset status was successfully updated!";
     }
@@ -76,7 +76,6 @@ public class Library {
     }
 
     public List<Asset> queryAssets(String query) {
-        ArrayList<Asset> output = null;
         String[] splitResult = query.split(" ");
         ArrayList<String> words = new ArrayList<>();
         for (String word : splitResult) {

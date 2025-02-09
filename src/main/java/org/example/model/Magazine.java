@@ -2,7 +2,7 @@ package org.example.model;
 
 import java.util.Objects;
 
-public class Magazine extends Asset{
+public class Magazine extends BorrowableAsset{
     private final String publisher;
     private final String releaseDate;
 
@@ -58,7 +58,7 @@ public class Magazine extends Asset{
                 ", publisher='" + publisher + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", status=" + status +
-                ", lastUpdate=" + returnTime +
+                ", returnTime=" + returnTime +
                 '}';
     }
 
