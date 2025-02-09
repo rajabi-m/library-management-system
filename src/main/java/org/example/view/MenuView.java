@@ -19,7 +19,7 @@ public abstract class MenuView {
         this.outputDisplay = outputDisplay;
     }
 
-    public void run() {
+    public void run() throws Exception{
         onMenuInitialize();
         printCommandList();
         while (isMenuRunning){
@@ -43,29 +43,24 @@ public abstract class MenuView {
         System.out.println(availableCommandsString());
     }
 
-    private void handleMenuChoice(int choice){
+    private void handleMenuChoice(int choice) throws Exception{
         if (choice < 1 || choice > commands.length){
             outputDisplay.display("Invalid choice!");
             return;
         }
 
-        try {
-            String result = commands[choice - 1].function.call();
+        String result = commands[choice - 1].function.call();
 
-            if (result == null) {
-                return;
-            }
-
-            String output =
-                    "Operation: " + commands[choice - 1].commandName + "\n" +
-                            "Result:\n" +
-                            result;
-
-            outputDisplay.display(output);
-
-        } catch (Exception exception){
-            throw new RuntimeException("An error occurred: " + exception.getMessage());
+        if (result == null) {
+            return;
         }
+
+        String output =
+                "Operation: " + commands[choice - 1].commandName + "\n" +
+                        "Result:\n" +
+                        result;
+
+        outputDisplay.display(output);
     }
 
     protected String availableCommandsString(){
