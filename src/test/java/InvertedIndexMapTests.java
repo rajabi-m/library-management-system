@@ -1,0 +1,53 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.example.model.InvertedIndexMap;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+public class InvertedIndexMapTests {
+    @Test
+    public void query_whenEverythingIsFine_shouldWorkCorrectly() {
+        InvertedIndexMap<String, String> invertedIndexMap = new InvertedIndexMap<>();
+        invertedIndexMap.add("key1", "value1");
+        invertedIndexMap.add("key2", "value2");
+        invertedIndexMap.add("key2", "value1");
+        invertedIndexMap.add("key3", "value3");
+        invertedIndexMap.add("key1", "value4");
+        invertedIndexMap.add("key2", "value4");
+        var keysToTest = List.of("key1", "key2");
+        var expectedResult = List.of("value1", "value4");
+
+        var result = invertedIndexMap.query(keysToTest);
+
+        assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void query_whenThereAreNoIntersection_shouldReturnEmptyList() {
+        InvertedIndexMap<String, String> invertedIndexMap = new InvertedIndexMap<>();
+        invertedIndexMap.add("key1", "value1");
+        invertedIndexMap.add("key2", "value2");
+        invertedIndexMap.add("key2", "value3");
+        invertedIndexMap.add("key3", "value3");
+        var keysToTest = List.of("key1", "key2");
+        var expectedResult = List.of();
+
+        var result = invertedIndexMap.query(keysToTest);
+
+        assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void query_whenKeysDoesNotBelongToAnyValue_shouldReturnEmptyList() {
+        InvertedIndexMap<String, String> invertedIndexMap = new InvertedIndexMap<>();
+        invertedIndexMap.add("key1", "value1");
+        invertedIndexMap.add("key2", "value2");
+        invertedIndexMap.add("key3", "value3");
+        var keysToTest = List.of("key4", "key5");
+        var expectedResult = List.of();
+
+        var result = invertedIndexMap.query(keysToTest);
+
+        assertEquals(result, expectedResult);
+    }
+}
