@@ -1,16 +1,20 @@
 package org.example.model;
 
+import org.example.utils.ParserUtils;
+
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Magazine extends BorrowableAsset{
     private final String publisher;
     private final String releaseDate;
 
-    public Magazine(String title, String publisher, String releaseDate, AssetStatus status) {
+    public Magazine(String title, String publisher, String releaseDate, AssetStatus status, LocalDate returnDate) {
         this.title = title;
         this.publisher = publisher;
         this.releaseDate = releaseDate;
         this.status = status;
+        this.returnDate = returnDate;
     }
 
     public Magazine(String title, String publisher, String releaseDate) {
@@ -30,12 +34,12 @@ public class Magazine extends BorrowableAsset{
 
     @Override
     public String toCsv() {
-        return title + "," + publisher + "," + releaseDate + "," + status;
+        return title + "," + publisher + "," + releaseDate + "," + status + "," + returnDate;
     }
 
     public static Magazine fromCsv(String csv){
         String[] parts = csv.split(",");
-        return new Magazine(parts[0], parts[1], parts[2], AssetStatus.valueOf(parts[3]));
+        return new Magazine(parts[0], parts[1], parts[2], AssetStatus.valueOf(parts[3]), ParserUtils.parseDate(parts[4]));
     }
 
     @Override
@@ -58,7 +62,7 @@ public class Magazine extends BorrowableAsset{
                 ", publisher='" + publisher + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", status=" + status +
-                ", returnTime=" + returnTime +
+                ", returnTime=" + returnDate +
                 '}';
     }
 

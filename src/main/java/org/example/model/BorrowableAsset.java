@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public abstract class BorrowableAsset extends Asset {
     protected AssetStatus status;
-    protected LocalDate returnTime;
+    protected LocalDate returnDate;
 
     public AssetStatus getStatus() {
         return status;
@@ -14,12 +14,12 @@ public abstract class BorrowableAsset extends Asset {
         this.status = status;
     }
 
-    public LocalDate getReturnTime() {
-        return returnTime;
+    public LocalDate getReturnDate() {
+        return returnDate;
     }
 
-    public void setReturnTime(LocalDate returnTime) {
-        this.returnTime = returnTime;
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
 }

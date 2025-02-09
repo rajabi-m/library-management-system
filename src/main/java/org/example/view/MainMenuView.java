@@ -122,10 +122,13 @@ public class MainMenuView extends MenuView{
         }
 
         if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
-            return "This asset is not available";
+            return "This asset is not available for borrowing";
         }
 
         borrowableAsset.setStatus(AssetStatus.Borrowed);
+        var returnTime = LocalDate.now();
+        returnTime = returnTime.plusDays(14);
+        borrowableAsset.setReturnDate(returnTime);
         return "Asset successfully borrowed";
     }
 
@@ -140,7 +143,6 @@ public class MainMenuView extends MenuView{
         }
 
         borrowableAsset.setStatus(AssetStatus.Exist);
-        borrowableAsset.setReturnTime(LocalDate.now());
         return "Asset successfully brought back";
     }
 

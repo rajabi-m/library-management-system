@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.utils.ParserUtils;
+
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Book extends BorrowableAsset {
@@ -8,11 +11,12 @@ public class Book extends BorrowableAsset {
     private final int releaseYear;
 
     // Constructor
-    public Book(String title, String author, int releaseYear, AssetStatus status) {
+    public Book(String title, String author, int releaseYear, AssetStatus status, LocalDate returnDate) {
         this.title = title;
         this.author = author;
         this.releaseYear = releaseYear;
         this.status = status;
+        this.returnDate = returnDate;
     }
 
     public Book(String title, String author, int releaseYear) {
@@ -41,7 +45,7 @@ public class Book extends BorrowableAsset {
                 ", author='" + author + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", status=" + status +
-                ", returnTime=" + returnTime +
+                ", returnTime=" + returnDate +
                 '}';
     }
 
@@ -59,7 +63,7 @@ public class Book extends BorrowableAsset {
 
     @Override
     public String toCsv() {
-        return title + "," + author + "," + releaseYear + "," + status;
+        return title + "," + author + "," + releaseYear + "," + status + "," + returnDate;
     }
 
     @Override
@@ -69,6 +73,6 @@ public class Book extends BorrowableAsset {
 
     public static Book fromCsv(String csv) {
         String[] data = csv.split(",");
-        return new Book(data[0], data[1], Integer.parseInt(data[2]), AssetStatus.valueOf(data[3]));
+        return new Book(data[0], data[1], Integer.parseInt(data[2]), AssetStatus.valueOf(data[3]), ParserUtils.parseDate(data[4]));
     }
 }
