@@ -19,7 +19,7 @@ public class InvertedIndexMapTests {
 
         var result = invertedIndexMap.query(keysToTest);
 
-        assertEquals(result, expectedResult);
+        assertEquals(expectedResult, result);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class InvertedIndexMapTests {
 
         var result = invertedIndexMap.query(keysToTest);
 
-        assertEquals(result, expectedResult);
+        assertEquals(expectedResult, result);
     }
 
     @Test
@@ -48,6 +48,6 @@ public class InvertedIndexMapTests {
 
         var result = invertedIndexMap.query(keysToTest);
 
-        assertEquals(result, expectedResult);
+        assertEquals(expectedResult, result);
     }
 }

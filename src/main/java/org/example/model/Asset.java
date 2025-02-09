@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Asset {
@@ -27,4 +28,15 @@ public abstract class Asset {
     public abstract String display();
 
     public abstract String toCsv();
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Asset asset)) return false;
+        return Objects.equals(title, asset.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(title);
+    }
 }

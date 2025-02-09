@@ -1,71 +1,115 @@
-import org.example.model.Book;
-import org.example.model.AssetStatus;
-import org.example.model.BorrowableAsset;
-import org.example.model.Library;
+import org.example.model.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LibraryTests {
     @Test
-    public void addAsset_whenBookIsPresent_shouldAddAsset() {
+    public void addBook_basicTest(){
         Library library = new Library();
-        Book book = new Book("The Lord of the Rings", "J.R.R. Tolkien", 1954);
+        Asset asset1 = new Asset("asset") {
+            @Override
+            public String display() {
+                return "";
+            }
 
-        library.addAsset(book);
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
 
-        var assets = library.getAssetsByTitle("The Lord of the Rings");
-        assertEquals(1, assets.size());
+        assertEquals(0, library.getAssets().size());
+        library.addAsset(asset1);
+        assertEquals(1, library.getAssets().size());
+    }
+    @Test
+    public void addBook_whenAssetExists_shouldReturnError(){
+        Library library = new Library();
+        Asset asset1 = new Asset("sameTitle") {
+            @Override
+            public String display() {
+                return "";
+            }
+
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
+
+        Asset asset2 = new Asset("sameTitle") {
+
+            @Override
+            public String display() {
+                return "";
+            }
+
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
+        library.addAsset(asset1);
+        library.addAsset(asset2);
+
+        assertEquals(1, library.getAssets().size());
     }
 
     @Test
-    public void removeAsset_whenBookIsPresent_shouldRemoveAsset() {
+    public void removeBook_basicTest(){
         Library library = new Library();
-        Book book = new Book("The Lord of the Rings", "J.R.R. Tolkien", 1954);
-        library.addAsset(book);
+        Asset asset1 = new Asset("asset1") {
+            @Override
+            public String display() {
+                return "";
+            }
 
-        library.removeAsset(book);
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
 
-        var assets = library.getAssetsByTitle("The Lord of the Rings");
-        assertEquals(1, assets.size());
+        library.addAsset(asset1);
+        assertEquals(1, library.getAssets().size());
+
+        library.removeAssetById(asset1.getId());
+        assertEquals(0, library.getAssets().size());
     }
 
     @Test
-    public void updateAssetStatus_whenBookIsPresent_shouldUpdateAssetStatus() {
+    public void queryAssets_basicTest(){
         Library library = new Library();
-        Book book = new Book("The Lord of the Rings", "J.R.R. Tolkien", 1954);
-        library.addAsset(book);
+        Asset asset1 = new Asset("asset one is here") {
+            @Override
+            public String display() {
+                return "";
+            }
 
-        library.updateAssetStatus(book, AssetStatus.Borrowed);
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
+        Asset asset2 = new Asset("asset two is here") {
+            @Override
+            public String display() {
+                return "";
+            }
 
-        var assets = library.getAssetsByType("The Lord of the Rings");
-        var borrowedAsset = (BorrowableAsset) assets.get(0);
-        assertEquals(AssetStatus.Borrowed, borrowedAsset.getStatus());
-    }
+            @Override
+            public String toCsv() {
+                return "";
+            }
+        };
 
-    @Test
-    public void testGetBooksByTitle(){
-        Library library = new Library();
-        Book book1 = new Book("The Lord of the Rings", "J.R.R. Tolkien", 1954);
-        Book book2 = new Book("The Hobbit", "J.R.R. Tolkien", 1937);
-        library.addAsset(book1);
-        library.addAsset(book2);
+        library.addAsset(asset1);
+        library.addAsset(asset2);
 
-        var assets = library.getAssetsByTitle("The Lord of the Rings");
-        assertEquals("The Lord of the Rings", assets.get(0).getTitle());
-        assertFalse(assets.contains(book2));
-    }
-
-    @Test
-    public void testGetBooksByAuthor(){
-        Library library = new Library();
-        Book book1 = new Book("The Lord of the Rings", "J.R.R. Tolkien", 1954, AssetStatus.Exist);
-        Book book2 = new Book("The Hobbit", "J.R.R. Tolkien 2", 1937, AssetStatus.Exist);
-        library.addBook(book1);
-        library.addBook(book2);
-
-        var books = library.getBooksByAuthor("J.R.R. Tolkien");
-        assertEquals("J.R.R. Tolkien", books.getHead().getAuthor());
-        assertFalse(books.contains(book2));
+        assertEquals(2, library.queryAssets("is here").size());
+        assertEquals(1, library.queryAssets("one").size());
+        assertEquals(0, library.queryAssets("one two here").size());
+        assertEquals(0, library.queryAssets("three").size());
     }
 }
