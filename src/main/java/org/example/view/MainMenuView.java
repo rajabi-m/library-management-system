@@ -2,11 +2,14 @@ package org.example.view;
 
 import org.example.io.OutputDisplay;
 import org.example.model.*;
+import org.example.model.dto.AssetDTO;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
 import org.example.view.factories.MagazineFactory;
 import org.example.view.factories.ThesisFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -26,7 +29,12 @@ public class MainMenuView extends MenuView{
             new CommandTemplate("Get assets by type", "Get all assets of a specific type", this::getAssetsByTypeCommand),
     };
 
-    private final Map<String, AssetFactory> assetFactories = Map.of(
+    private final static List<Class<? extends Asset>> assetClasses = List.of(
+            Book.class,
+            Magazine.class,
+            Thesis.class
+    );
+    private final static Map<String, AssetFactory> assetFactories = Map.of(
             Book.class.getSimpleName(), new BookFactory(),
             Magazine.class.getSimpleName(), new MagazineFactory(),
             Thesis.class.getSimpleName(), new ThesisFactory()
@@ -50,17 +58,29 @@ public class MainMenuView extends MenuView{
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
-        var assets = library.getAssetsByTitle(title);
+        var assetDTOS = library.getAssetsByTitle(title);
 
-        return convertIterableToHumanReadableString(assets);
+        if (assetDTOS.isEmpty()){
+            return "No assets found";
+        }
+
+        return convertAssetDTOListToHumanReadableString(assetDTOS);
     }
 
     private String getAllAssetsCommand() {
-        return convertIterableToHumanReadableString(library.getAssets());
+        var assets = library.getAssets();
+
+        if (assets.isEmpty()){
+            return "There are no assets in library";
+        }
+
+        return convertAssetDTOListToHumanReadableString(assets);
     }
 
 
     private String addAssetCommand() {
+        System.out.println("Here is the list of all asset types: ");
+        printAssetTypes();
         System.out.println("Enter asset Type: ");
         var assetType = scanner.nextLine();
 
@@ -115,16 +135,18 @@ public class MainMenuView extends MenuView{
     }
 
     private String getAssetsByTypeCommand(){
+        System.out.println("Here is the list of all asset types: ");
+        printAssetTypes();
         System.out.println("Enter asset type: ");
         String type = scanner.nextLine();
 
-        var assets = library.getAssetsByType(type);
+        var assetDTOS = library.getAssetsByType(type);
 
-        if (assets.isEmpty()){
+        if (assetDTOS.isEmpty()){
             return "No assets found with type: " + type;
         }
 
-        return convertIterableToHumanReadableString(assets);
+        return convertAssetDTOListToHumanReadableString(assetDTOS);
     }
 
     private String borrowAssetCommand(){
@@ -146,20 +168,28 @@ public class MainMenuView extends MenuView{
     }
 
     private String getBorrowableAssetsStatusCommand(){
-        var borrowableAssetsString = library.getBorrowableAssets();
+        ArrayList<AssetDTO> borrowableAssetsString = library.getBorrowableAssets();
 
-        if (borrowableAssetsString.size() <= 0){
+        if (borrowableAssetsString.isEmpty()){
             return "No borrowable assets found";
         }
 
-        return convertIterableToHumanReadableString(borrowableAssetsString);
+        return convertAssetDTOListToHumanReadableString(borrowableAssetsString);
     }
 
-    private static String convertIterableToHumanReadableString(Iterable<?> iterable){
-        var result = new StringBuilder();
-        for (Object o : iterable){
-            result.append(o.toString()).append('\n');
+    private static void printAssetTypes(){
+        for (var assetClass : assetClasses) {
+            System.out.println(assetClass.getSimpleName());
         }
-        return result.toString();
+    }
+
+    private static String convertAssetDTOListToHumanReadableString(List<AssetDTO> assetDTOS){
+        StringBuilder output = new StringBuilder();
+        for (AssetDTO assetDTO : assetDTOS) {
+            output.append(assetDTO.description());
+            output.append("\n");
+        }
+
+        return output.toString();
     }
 }

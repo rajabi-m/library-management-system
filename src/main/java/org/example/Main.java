@@ -27,7 +27,7 @@ public class Main {
     }
 
     private static void saveLibrary(Library library) {
-        assetLoader.writeAssetsToFile(library.getAllAssets());
+        assetLoader.writeAssetsToFile(library.getAllAssetObjects());
     }
 
     private static void initializeFields() {

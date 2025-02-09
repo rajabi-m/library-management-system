@@ -1,10 +1,11 @@
 package org.example.model;
 
+import org.example.model.dto.AssetDTO;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Library {
     private final HashMap<String, Asset> assetsMap;
@@ -72,7 +73,7 @@ public class Library {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
             if (!(asset instanceof BorrowableAsset borrowableAsset)) {
-                return new ArrayList<>();
+                continue;
             }
             output.add(new AssetDTO(borrowableAsset.getId(), borrowableAsset.toString()));
         }
@@ -140,7 +141,7 @@ public class Library {
         return "Asset successfully brought back";
     }
 
-    public List<Asset> getAllAssets() {
+    public List<Asset> getAllAssetObjects() {
         return new ArrayList<>(assetsMap.values());
     }
 }
