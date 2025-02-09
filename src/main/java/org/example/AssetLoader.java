@@ -48,7 +48,8 @@ public class AssetLoader {
 
             while (scanner.hasNextLine()) {
                 String fullCsv = scanner.nextLine();
-                assets.add(convertCsvToAsser(fullCsv));
+                if (fullCsv.isBlank()) continue;
+                assets.add(convertCsvToAsset(fullCsv));
             }
 
             fileReader.close();
@@ -58,7 +59,7 @@ public class AssetLoader {
         return assets;
     }
 
-    public static Asset convertCsvToAsser(String fullCsv) {
+    public static Asset convertCsvToAsset(String fullCsv) {
         int firstCommaIndex = fullCsv.indexOf(",");
 
         if (firstCommaIndex == -1) {

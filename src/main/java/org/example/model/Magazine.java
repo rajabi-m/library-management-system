@@ -4,24 +4,22 @@ import org.example.utils.ParserUtils;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Magazine extends BorrowableAsset{
     private final String publisher;
     private final String releaseDate;
 
-    public Magazine(String title, String publisher, String releaseDate, AssetStatus status, LocalDate returnDate) {
-        this.title = title;
+    public Magazine(String id, String title, String publisher, String releaseDate, AssetStatus status, LocalDate returnDate) {
+        super(id, title, status, returnDate);
         this.publisher = publisher;
         this.releaseDate = releaseDate;
-        this.status = status;
-        this.returnDate = returnDate;
     }
 
     public Magazine(String title, String publisher, String releaseDate) {
-        this.title = title;
+        super(title);
         this.publisher = publisher;
         this.releaseDate = releaseDate;
-        this.status = AssetStatus.Exist;
     }
 
     public String getPublisher() {
@@ -34,12 +32,12 @@ public class Magazine extends BorrowableAsset{
 
     @Override
     public String toCsv() {
-        return title + "," + publisher + "," + releaseDate + "," + status + "," + returnDate;
+        return getId() + "," + getTitle() + "," + publisher + "," + releaseDate + "," + getStatus() + "," + getReturnDate();
     }
 
     public static Magazine fromCsv(String csv){
         String[] parts = csv.split(",");
-        return new Magazine(parts[0], parts[1], parts[2], AssetStatus.valueOf(parts[3]), ParserUtils.parseDate(parts[4]));
+        return new Magazine(parts[0], parts[1], parts[2], parts[3], AssetStatus.valueOf(parts[4]), ParserUtils.parseDate(parts[5]));
     }
 
     @Override
@@ -47,27 +45,27 @@ public class Magazine extends BorrowableAsset{
         if (this == o) return true;
         if (!(o instanceof Magazine magazine)) return false;
         return Objects.equals(publisher, magazine.publisher) && Objects.equals(releaseDate, magazine.releaseDate)
-                && Objects.equals(title, magazine.title);
+                && Objects.equals(getTitle(), magazine.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, publisher, releaseDate);
+        return Objects.hash(getTitle(), publisher, releaseDate);
     }
 
     @Override
     public String toString() {
         return "Magazine{" +
-                "title='" + title + '\'' +
+                "title='" + getTitle() + '\'' +
                 ", publisher='" + publisher + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
-                ", status=" + status +
-                ", returnTime=" + returnDate +
+                ", status=" + getStatus() +
+                ", returnTime=" + getReturnDate() +
                 '}';
     }
 
     @Override
     public String display() {
-        return "Magazine: '" + title + "'";
+        return "Magazine: '" + getTitle() + "'";
     }
 }

@@ -1,12 +1,13 @@
 package org.example.view;
 
-import org.example.AssetLoader;
 import org.example.io.OutputDisplay;
-import org.example.model.Asset;
-import org.example.model.AssetStatus;
-import org.example.model.BorrowableAsset;
-import org.example.model.Library;
+import org.example.model.*;
+import org.example.view.factories.AssetFactory;
+import org.example.view.factories.BookFactory;
+import org.example.view.factories.MagazineFactory;
+import org.example.view.factories.ThesisFactory;
 
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainMenuView extends MenuView{
@@ -24,6 +25,12 @@ public class MainMenuView extends MenuView{
             new CommandTemplate("Get assets by title", "Get all assets with a specific title", this::getAssetsByTitleCommand),
             new CommandTemplate("Get assets by type", "Get all assets of a specific type", this::getAssetsByTypeCommand),
     };
+
+    private final Map<String, AssetFactory> assetFactories = Map.of(
+            Book.class.getSimpleName(), new BookFactory(),
+            Magazine.class.getSimpleName(), new MagazineFactory(),
+            Thesis.class.getSimpleName(), new ThesisFactory()
+    );
 
     private final Library library;
 
@@ -54,25 +61,31 @@ public class MainMenuView extends MenuView{
 
 
     private String addAssetCommand() {
-        System.out.println("Enter asset in csv format: ");
-        String assetCsv = scanner.nextLine();
+        System.out.println("Enter asset Type: ");
+        var assetType = scanner.nextLine();
 
-        var asset = AssetLoader.convertCsvToAsser(assetCsv);
+        if (!assetFactories.containsKey(assetType)) {
+            return "invalid asset type: " + assetType;
+        }
+
+        var assetFactory = assetFactories.get(assetType);
+
+        var asset = assetFactory.createAsset(scanner);
 
         return library.addAsset(asset);
     }
 
     private String removeAssetCommand(){
-        Asset asset = getAssetFromUser();
+        String assetId = getAssetFromUserAndReturnAssetId();
 
-        if (asset == null){
+        if (assetId == null){
             return "No asset found or selected.";
         }
 
-        return library.removeAsset(asset);
+        return library.removeAssetById(assetId);
     }
 
-    private Asset getAssetFromUser(){
+    private String getAssetFromUserAndReturnAssetId(){
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
@@ -86,7 +99,7 @@ public class MainMenuView extends MenuView{
         do {
             System.out.println("Select asset: ");
             for (int i = 0; i < assets.size(); i++) {
-                System.out.println((i + 1) + ". " + assets.get(i));
+                System.out.println((i + 1) + ". " + assets.get(i).description());
             }
             System.out.println((assets.size() + 1) + ". " + "Cancel");
 
@@ -98,7 +111,7 @@ public class MainMenuView extends MenuView{
             return null;
         }
 
-        return assets.get(choice - 1);
+        return assets.get(choice - 1).id();
     }
 
     private String getAssetsByTypeCommand(){
@@ -115,38 +128,31 @@ public class MainMenuView extends MenuView{
     }
 
     private String borrowAssetCommand(){
-        var asset = getAssetFromUser();
-        if (asset == null){
+        var assetId = getAssetFromUserAndReturnAssetId();
+        if (assetId == null){
             return "No asset found or selected";
         }
 
-        return library.borrowAsset(asset);
+        return library.borrowAssetById(assetId);
     }
 
     private String returnAssetCommand(){
-        var asset = getAssetFromUser();
-        if (asset == null){
+        var assetId = getAssetFromUserAndReturnAssetId();
+        if (assetId == null){
             return "No asset found or selected";
         }
 
-        return library.returnAsset(asset);
+        return library.returnAssetById(assetId);
     }
 
     private String getBorrowableAssetsStatusCommand(){
-        var assets = library.getAssets();
-        StringBuilder result = new StringBuilder();
-        for (Asset asset : assets) {
-            if (!(asset instanceof BorrowableAsset borrowableAsset))
-                continue;
+        var borrowableAssetsString = library.getBorrowableAssets();
 
-            result.append(borrowableAsset.display()).append(" / ").append(borrowableAsset.getStatus()).append("\n");
-        }
-
-        if (assets.size() <= 0){
+        if (borrowableAssetsString.size() <= 0){
             return "No borrowable assets found";
         }
 
-        return result.toString();
+        return convertIterableToHumanReadableString(borrowableAssetsString);
     }
 
     private static String convertIterableToHumanReadableString(Iterable<?> iterable){

@@ -8,12 +8,20 @@ public class Thesis extends Asset{
     private final String department;
     private final String publishDate;
 
-    public Thesis(String title, String author, String supervisor, String department, String publishDate) {
+    public Thesis(String id, String title, String author, String supervisor, String department, String publishDate) {
+        super(id, title);
         this.publishDate = publishDate;
-        this.title = title;
         this.author = author;
         this.supervisor = supervisor;
         this.department = department;
+    }
+
+    public Thesis(String title, String author, String supervisor, String department, String publishDate) {
+        super(title);
+        this.author = author;
+        this.supervisor = supervisor;
+        this.department = department;
+        this.publishDate = publishDate;
     }
 
     public String getAuthor() {
@@ -34,12 +42,12 @@ public class Thesis extends Asset{
 
     @Override
     public String toCsv() {
-        return title + "," + author + "," + supervisor + "," + department + "," + publishDate;
+        return getId() + "," + getTitle() + "," + author + "," + supervisor + "," + department + "," + publishDate;
     }
 
     public static Thesis fromCsv(String csv) {
         var parts = csv.split(",");
-        return new Thesis(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        return new Thesis(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
     }
 
     @Override
@@ -50,18 +58,18 @@ public class Thesis extends Asset{
                 Objects.equals(supervisor, thesis.supervisor) &&
                 Objects.equals(department, thesis.department) &&
                 Objects.equals(publishDate, thesis.publishDate) &&
-                Objects.equals(title, thesis.title);
+                Objects.equals(getTitle(), thesis.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, author, supervisor, department, publishDate);
+        return Objects.hash(getTitle(), author, supervisor, department, publishDate);
     }
 
     @Override
     public String toString() {
         return "Thesis{" +
-                "title='" + title + '\'' +
+                "title='" + getTitle() + '\'' +
                 ", author='" + author + '\'' +
                 ", supervisor='" + supervisor + '\'' +
                 ", department='" + department + '\'' +
@@ -71,6 +79,6 @@ public class Thesis extends Asset{
 
     @Override
     public String display() {
-        return "Thesis: '" + title + "' from '" + author + "' to '" + supervisor + "'";
+        return "Thesis: '" + getTitle() + "' from '" + author + "' to '" + supervisor + "'";
     }
 }
