@@ -1,7 +1,6 @@
 package org.example.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public abstract class Asset {
     protected String title;
@@ -31,8 +30,4 @@ public abstract class Asset {
     public abstract String display();
 
     public abstract String toCsv();
-
-    public static Asset fromCsv(String csv){
-        throw new UnsupportedOperationException("Not implemented.");
-    }
 }

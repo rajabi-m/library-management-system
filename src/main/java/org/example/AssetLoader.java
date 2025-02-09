@@ -6,10 +6,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class AssetLoader {
