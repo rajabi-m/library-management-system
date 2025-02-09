@@ -7,7 +7,6 @@ import org.example.model.AssetStatus;
 import org.example.model.BorrowableAsset;
 import org.example.model.Library;
 
-import java.time.LocalDate;
 import java.util.Scanner;
 
 public class MainMenuView extends MenuView{
@@ -20,7 +19,7 @@ public class MainMenuView extends MenuView{
             new CommandTemplate("Remove asset", "Remove an asset from the library", this::removeAssetCommand),
             new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getBorrowableAssetsStatusCommand),
             new CommandTemplate("Borrow asset", "Borrow an asset of library", this::borrowAssetCommand),
-            new CommandTemplate("Bring back asset", "Bring back the asset of library", this::bringBackAssetCommand),
+            new CommandTemplate("Return asset", "Return the asset of library", this::returnAssetCommand),
             new CommandTemplate("Get all assets", "Get all assets in the library", this::getAllAssetsCommand),
             new CommandTemplate("Get assets by title", "Get all assets with a specific title", this::getAssetsByTitleCommand),
             new CommandTemplate("Get assets by type", "Get all assets of a specific type", this::getAssetsByTypeCommand),
@@ -121,29 +120,16 @@ public class MainMenuView extends MenuView{
             return "No asset found or selected";
         }
 
-        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
-            return "This asset is not available for borrowing";
-        }
-
-        borrowableAsset.setStatus(AssetStatus.Borrowed);
-        var returnTime = LocalDate.now();
-        returnTime = returnTime.plusDays(14);
-        borrowableAsset.setReturnDate(returnTime);
-        return "Asset successfully borrowed";
+        return library.borrowAsset(asset);
     }
 
-    private String bringBackAssetCommand(){
+    private String returnAssetCommand(){
         var asset = getAssetFromUser();
         if (asset == null){
             return "No asset found or selected";
         }
 
-        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
-            return "This asset is not borrowed";
-        }
-
-        borrowableAsset.setStatus(AssetStatus.Exist);
-        return "Asset successfully brought back";
+        return library.returnAsset(asset);
     }
 
     private String getBorrowableAssetsStatusCommand(){

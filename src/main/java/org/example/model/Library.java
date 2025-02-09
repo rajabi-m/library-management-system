@@ -1,5 +1,6 @@
 package org.example.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +48,6 @@ public class Library {
         return "Asset removed successfully!";
     }
 
-    public String updateAssetStatus(BorrowableAsset asset, AssetStatus status) {
-        asset.setStatus(status);
-        return "The asset status was successfully updated!";
-    }
-
     public ArrayList<Asset> getAssetsByTitle(String title){
         var output = new ArrayList<Asset>();
         for (Asset asset : this.assets) {
@@ -84,5 +80,27 @@ public class Library {
         }
 
         return invertedIndexMap.query(words);
+    }
+
+    public String borrowAsset(Asset asset) {
+        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
+            return "This asset is not available for borrowing";
+        }
+
+        borrowableAsset.setStatus(AssetStatus.Borrowed);
+        var returnTime = LocalDate.now();
+        returnTime = returnTime.plusDays(14);
+        borrowableAsset.setReturnDate(returnTime);
+        return "Asset successfully borrowed";
+    }
+
+    public String returnAsset(Asset asset) {
+        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
+            return "This asset is not borrowed";
+        }
+
+        borrowableAsset.setStatus(AssetStatus.Exist);
+        borrowableAsset.setReturnDate(null);
+        return "Asset successfully brought back";
     }
 }
