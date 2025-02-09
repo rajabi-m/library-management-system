@@ -41,6 +41,7 @@ public class Book extends Asset {
                 ", author='" + author + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", status=" + status +
+                ", lastUpdate=" + lastUpdate +
                 '}';
     }
 
@@ -59,6 +60,11 @@ public class Book extends Asset {
     @Override
     public String toCsv() {
         return title + "," + author + "," + releaseYear + "," + status;
+    }
+
+    @Override
+    public String display() {
+        return "Book: '" + title + "' from '" + author + "'";
     }
 
     public static Book fromCsv(String csv) {

@@ -69,4 +69,9 @@ public class Thesis extends Asset{
                 ", publishDate='" + publishDate + '\'' +
                 '}';
     }
+
+    @Override
+    public String display() {
+        return "Thesis: '" + title + "' from '" + author + "' to '" + supervisor + "'";
+    }
 }

@@ -4,6 +4,8 @@ import org.example.AssetLoader;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MainMenuView extends MenuView{
@@ -15,6 +17,9 @@ public class MainMenuView extends MenuView{
             new CommandTemplate("Add asset", "Add an asset to the library", this::addAssetCommand),
             new CommandTemplate("Remove asset", "Remove an asset from the library", this::removeAssetCommand),
             new CommandTemplate("Update asset status", "Update the status of an asset", this::updateAssetStatusCommand),
+            new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getBorrowableAssetsStatusCommand),
+            new CommandTemplate("Borrow asset", "Borrow an asset of library", this::borrowAssetCommand),
+            new CommandTemplate("Bring back asset", "Bring back the asset of library", this::bringBackAssetCommand),
             new CommandTemplate("Get all assets", "Get all assets in the library", this::getAllAssetsCommand),
             new CommandTemplate("Get assets by title", "Get all assets with a specific title", this::getAssetsByTitleCommand),
             new CommandTemplate("Get assets by type", "Get all assets of a specific type", this::getAssetsByTypeCommand),
@@ -120,5 +125,51 @@ public class MainMenuView extends MenuView{
         }
 
         return assets.toString();
+    }
+
+    private String borrowAssetCommand(){
+        var asset = getAssetFromUser();
+        if (asset == null){
+            return "No asset found or selected";
+        }
+
+        if (asset.getStatus() != AssetStatus.Exist){
+            return "This asset is not available";
+        }
+
+        asset.setStatus(AssetStatus.Borrowed);
+        return "Asset successfully borrowed";
+    }
+
+    private String bringBackAssetCommand(){
+        var asset = getAssetFromUser();
+        if (asset == null){
+            return "No asset found or selected";
+        }
+
+        if (asset.getStatus() != AssetStatus.Borrowed){
+            return "This asset is not borrowed";
+        }
+
+        asset.setStatus(AssetStatus.Exist);
+        asset.setLastUpdate(LocalDate.now());
+        return "Asset successfully brought back";
+    }
+
+    private String getBorrowableAssetsStatusCommand(){
+        var assets = library.getAssets();
+        StringBuilder result = new StringBuilder();
+        for (Asset asset : assets) {
+            if (asset.getStatus() == AssetStatus.Banned)
+                continue;
+
+            result.append(asset.display()).append(" / ").append(asset.getStatus()).append("\n");
+        }
+
+        if (assets.size() <= 0){
+            return "No borrowable assets found";
+        }
+
+        return result.toString();
     }
 }
