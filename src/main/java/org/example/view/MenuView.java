@@ -43,7 +43,7 @@ public abstract class MenuView {
         this.commands = mergedCommands;
     }
 
-    protected void onMenuInitialize(){};
+    protected void onMenuInitialize(){}
 
     private void printCommandList(){
         System.out.println(availableCommandsString());
