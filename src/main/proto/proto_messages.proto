@@ -5,8 +5,8 @@ option java_multiple_files = false;
 package com.example.model.proto;
 
 enum AssetStatus {
-  AVAILABLE = 0;
-  BORROWED = 1;
+  Exist = 0;
+  Borrowed = 1;
 }
 
 message Book {
@@ -34,4 +34,16 @@ message Thesis {
   string supervisor = 4;
   string department = 5;
   string publishDate = 6;
+}
+
+message Asset {
+  oneof asset {
+    Book book = 1;
+    Magazine magazine = 2;
+    Thesis thesis = 3;
+  }
+}
+
+message AssetList {
+  repeated Asset assets = 1;
 }

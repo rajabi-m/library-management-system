@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Asset;
 import org.example.serializer.JsonAssetListSerializer;
+import org.example.serializer.ProtoAssetListSerializer;
 import org.example.serializer.Serializer;
 
 import java.io.*;
@@ -12,40 +13,33 @@ import java.util.Scanner;
 public class AssetLoader {
     private final String filePath;
 
-    private final Serializer<List<Asset>> serializer = new JsonAssetListSerializer();
+    private final Serializer<List<Asset>> serializer = new ProtoAssetListSerializer();
     public AssetLoader(String filePath) {
         this.filePath = filePath;
     }
 
     public void writeAssetsToFile(List<Asset> assets) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
-
-            String data = serializer.serialize(assets);
-            bufferedWriter.write(data);
-
-            bufferedWriter.close();
+        try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(filePath))) {
+            var data = serializer.serialize(assets);
+            dataOutputStream.write(data);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public List<Asset> readAssetsFromFile() {
-        try {
-            FileReader fileReader = new FileReader(filePath);
-            Scanner scanner = new Scanner(fileReader);
-
-            StringBuilder stringBuilder = new StringBuilder();
-            while (scanner.hasNextLine()) {
-                stringBuilder.append(scanner.nextLine());
+        try (InputStream inputStream = new FileInputStream(filePath)) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, length);
             }
-            String data = stringBuilder.toString();
 
+            byte[] data = byteArrayOutputStream.toByteArray();
             var assets = serializer.deserialize(data);
 
-            fileReader.close();
             System.out.println("Assets loaded successfully.");
-
             return assets == null ? new ArrayList<>() : assets;
         } catch (FileNotFoundException e){
             System.out.println("Assets file not found. Creating a new file...");
