@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class Regex {
+public abstract class RegexUtils {
     public static final String dateRegex = "^(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})$";
 
     public static LocalDate parseDate(String date){

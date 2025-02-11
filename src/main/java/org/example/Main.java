@@ -7,7 +7,7 @@ import org.example.view.MainMenuView;
 
 public class Main {
     // using target/ folder to store files, so they are ignored by git
-    private static final String booksDatabaseFilePath = "target/assets.txt";
+    private static final String booksDatabaseFilePath = "target/assets.json";
     private static final String outputFilePath = "target/output.txt";
 
     private final static boolean debugMode = true;

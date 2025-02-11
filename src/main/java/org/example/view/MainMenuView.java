@@ -3,7 +3,7 @@ package org.example.view;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 import org.example.model.dto.AssetDTO;
-import org.example.utils.Regex;
+import org.example.utils.RegexUtils;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
 import org.example.view.factories.MagazineFactory;
@@ -162,7 +162,7 @@ public class MainMenuView extends MenuView{
 
         System.out.println("Enter return date (yyyy-mm-dd): ");
         String returnDateString = scanner.nextLine();
-        LocalDate returnDate = Regex.parseDate(returnDateString);
+        LocalDate returnDate = RegexUtils.parseDate(returnDateString);
 
         if (returnDate == null){
             return "Invalid date format";

@@ -1,4 +1,4 @@
-package org.example.utils;
+package org.example.utils.type_adapters;
 
 import com.google.gson.*;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.example.utils;
+package org.example.utils.type_adapters;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.*;
