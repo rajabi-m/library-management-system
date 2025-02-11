@@ -109,6 +109,11 @@ public class Library {
     }
 
     public String borrowAssetById(String assetId) {
+        var returnDate = LocalDate.now().plusDays(14);
+        return borrowAssetById(assetId, returnDate);
+    }
+
+    public String borrowAssetById(String assetId, LocalDate returnDate) {
         if (!assetsMap.containsKey(assetId)) {
             return "Asset does not exist in the library!";
         }
@@ -120,9 +125,7 @@ public class Library {
         }
 
         borrowableAsset.setStatus(AssetStatus.Borrowed);
-        var returnTime = LocalDate.now();
-        returnTime = returnTime.plusDays(14);
-        borrowableAsset.setReturnDate(returnTime);
+        borrowableAsset.setReturnDate(returnDate);
         return "Asset successfully borrowed";
     }
 

@@ -3,11 +3,13 @@ package org.example.view;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 import org.example.model.dto.AssetDTO;
+import org.example.utils.Regex;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
 import org.example.view.factories.MagazineFactory;
 import org.example.view.factories.ThesisFactory;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,9 +92,12 @@ public class MainMenuView extends MenuView{
 
         var assetFactory = assetFactories.get(assetType);
 
-        var asset = assetFactory.createAsset(scanner);
-
-        return library.addAsset(asset);
+        try {
+            var asset = assetFactory.createAsset(scanner);
+            return library.addAsset(asset);
+        } catch (RuntimeException e){
+            return "An error occurred while creating/adding the asset: " + e.getMessage();
+        }
     }
 
     private String removeAssetCommand(){
@@ -155,7 +160,15 @@ public class MainMenuView extends MenuView{
             return "No asset found or selected";
         }
 
-        return library.borrowAssetById(assetId);
+        System.out.println("Enter return date (yyyy-mm-dd): ");
+        String returnDateString = scanner.nextLine();
+        LocalDate returnDate = Regex.parseDate(returnDateString);
+
+        if (returnDate == null){
+            return "Invalid date format";
+        }
+
+        return library.borrowAssetById(assetId, returnDate);
     }
 
     private String returnAssetCommand(){

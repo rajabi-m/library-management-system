@@ -2,6 +2,7 @@ package org.example.view;
 
 import org.example.io.OutputDisplay;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
@@ -24,9 +25,14 @@ public abstract class MenuView {
         printCommandList();
         while (isMenuRunning){
             System.out.print("> ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            handleMenuChoice(choice);
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                handleMenuChoice(choice);
+            } catch (InputMismatchException e){
+                System.out.println("Invalid input! Please enter a number.");
+                scanner.nextLine(); // Clear the invalid input
+            }
         }
     }
 

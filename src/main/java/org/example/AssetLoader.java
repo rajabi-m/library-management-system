@@ -5,10 +5,7 @@ import org.example.model.Book;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
 
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
@@ -53,7 +50,12 @@ public class AssetLoader {
             }
 
             fileReader.close();
-        } catch (IOException e) {
+            System.out.println("Assets loaded successfully.");
+        } catch (FileNotFoundException e){
+            System.out.println("Assets file not found. Creating a new file...");
+            createAssetsFile();
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
         return assets;
@@ -75,6 +77,17 @@ public class AssetLoader {
         }
 
         return parser.apply(csv);
+    }
+
+    private void createAssetsFile() {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
+            bufferedWriter.write("");
+            bufferedWriter.close();
+            System.out.println("File created successfully.");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
