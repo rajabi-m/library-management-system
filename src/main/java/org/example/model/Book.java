@@ -55,24 +55,9 @@ public class Book extends BorrowableAsset {
         return Objects.hash(getTitle(), author, releaseYear);
     }
 
-    @Override
-    public String toCsv() {
-        return getId() + "," + getTitle() + "," + author + "," + releaseYear + "," + getStatus() + "," + getReturnDate();
-    }
 
     @Override
     public String display() {
         return "Book: '" + getTitle() + "' from '" + author + "'";
-    }
-
-    public static Book fromCsv(String csv) {
-        String[] data = csv.split(",");
-        return new Book(data[0],
-                data[1],
-                data[2],
-                Integer.parseInt(data[3]),
-                AssetStatus.valueOf(data[4]),
-                ParserUtils.parseDate(data[5])
-        );
     }
 }

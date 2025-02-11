@@ -4,15 +4,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Asset {
+    protected final String type;
     private final String title;
     private final String id;
 
     public Asset(String title){
+        type = this.getClass().getSimpleName();
         this.id = UUID.randomUUID().toString();
         this.title = title;
     }
 
     public Asset(String id, String title){
+        type = this.getClass().getSimpleName();
         this.id = id;
         this.title = title;
     }
@@ -27,7 +30,9 @@ public abstract class Asset {
 
     public abstract String display();
 
-    public abstract String toCsv();
+    public String getType() {
+        return type;
+    }
 
     @Override
     public boolean equals(Object o) {

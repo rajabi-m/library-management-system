@@ -41,16 +41,6 @@ public class Thesis extends Asset{
     }
 
     @Override
-    public String toCsv() {
-        return getId() + "," + getTitle() + "," + author + "," + supervisor + "," + department + "," + publishDate;
-    }
-
-    public static Thesis fromCsv(String csv) {
-        var parts = csv.split(",");
-        return new Thesis(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Thesis thesis)) return false;

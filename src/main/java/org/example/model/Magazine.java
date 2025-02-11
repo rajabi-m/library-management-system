@@ -30,16 +30,6 @@ public class Magazine extends BorrowableAsset{
     }
 
     @Override
-    public String toCsv() {
-        return getId() + "," + getTitle() + "," + publisher + "," + releaseDate + "," + getStatus() + "," + getReturnDate();
-    }
-
-    public static Magazine fromCsv(String csv){
-        String[] parts = csv.split(",");
-        return new Magazine(parts[0], parts[1], parts[2], parts[3], AssetStatus.valueOf(parts[4]), ParserUtils.parseDate(parts[5]));
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Magazine magazine)) return false;
