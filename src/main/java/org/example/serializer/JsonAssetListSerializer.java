@@ -1,9 +1,8 @@
-package org.example;
+package org.example.serializer;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.example.model.Asset;
-import org.example.util.GsonProvider;
 
 import java.util.ArrayList;
 import java.util.List;

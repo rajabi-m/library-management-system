@@ -1,6 +1,8 @@
 package org.example;
 
 import org.example.model.Asset;
+import org.example.serializer.JsonAssetListSerializer;
+import org.example.serializer.Serializer;
 
 import java.io.*;
 import java.util.ArrayList;

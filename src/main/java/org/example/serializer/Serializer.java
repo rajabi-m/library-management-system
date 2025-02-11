@@ -1,4 +1,4 @@
-package org.example;
+package org.example.serializer;
 
 public interface Serializer<T> {
     String serialize(T object);

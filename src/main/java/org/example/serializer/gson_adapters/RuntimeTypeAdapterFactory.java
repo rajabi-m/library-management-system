@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.example.util.type_adapters;
+package org.example.serializer.gson_adapters;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.gson.*;
