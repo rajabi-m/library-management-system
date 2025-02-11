@@ -1,4 +1,4 @@
-package org.example.utils;
+package org.example.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,8 +6,8 @@ import org.example.model.Asset;
 import org.example.model.Book;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
-import org.example.utils.type_adapters.LocalDateTypeAdapter;
-import org.example.utils.type_adapters.RuntimeTypeAdapterFactory;
+import org.example.util.type_adapters.LocalDateTypeAdapter;
+import org.example.util.type_adapters.RuntimeTypeAdapterFactory;
 
 import java.time.LocalDate;
 

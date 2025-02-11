@@ -3,7 +3,7 @@ package org.example.view;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 import org.example.model.dto.AssetDTO;
-import org.example.utils.RegexUtils;
+import org.example.util.RegexUtils;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
 import org.example.view.factories.MagazineFactory;

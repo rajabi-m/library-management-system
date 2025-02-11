@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_multiple_files = false;
+
+package com.example.model.proto;
+
+message Asset {
+  string id = 1;
+  string title = 2;
+}
+
+enum AssetStatus {
+  AVAILABLE = 0;
+  BORROWED = 1;
+}
+
+message BorrowableAsset {
+  Asset asset = 1;
+  AssetStatus status = 2;
+  int64 returnDate = 3;
+}
+
+message Book {
+  BorrowableAsset borrowableAsset = 1;
+  string author = 2;
+  int32 releaseYear = 3;
+}
+
+message Magazine {
+  BorrowableAsset borrowableAsset = 1;
+  string publisher = 2;
+  string releaseDate = 3;
+}
+
+message Thesis {
+  Asset asset = 1;
+  string author = 2;
+  string supervisor = 3;
+  string department = 4;
+  string publishDate = 5;
+}

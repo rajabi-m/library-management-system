@@ -18,7 +18,7 @@ public class Library {
         this.assetsMap = new HashMap<>();
     }
 
-    public Library(ArrayList<Asset> assets) {
+    public Library(List<Asset> assets) {
         this.assetsMap = new HashMap<>();
         this.invertedIndexMap = new InvertedIndexMap<>();
 

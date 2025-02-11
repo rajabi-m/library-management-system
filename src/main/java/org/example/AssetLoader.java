@@ -1,29 +1,26 @@
 package org.example;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.example.model.Asset;
-import org.example.utils.GsonProvider;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class AssetLoader {
     private final String filePath;
 
-    private final static Gson gson = GsonProvider.getGson();
-
+    private final Serializer<List<Asset>> serializer = new JsonAssetListSerializer();
     public AssetLoader(String filePath) {
         this.filePath = filePath;
     }
 
-    public void writeAssetsToFile(Iterable<Asset> assets) {
+    public void writeAssetsToFile(List<Asset> assets) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
 
-            String json = gson.toJson(assets);
-            bufferedWriter.write(json);
+            String data = serializer.serialize(assets);
+            bufferedWriter.write(data);
 
             bufferedWriter.close();
         } catch (IOException e) {
@@ -31,8 +28,7 @@ public class AssetLoader {
         }
     }
 
-    public ArrayList<Asset> readAssetsFromFile() {
-        var assets = new ArrayList<Asset>();
+    public List<Asset> readAssetsFromFile() {
         try {
             FileReader fileReader = new FileReader(filePath);
             Scanner scanner = new Scanner(fileReader);
@@ -41,13 +37,14 @@ public class AssetLoader {
             while (scanner.hasNextLine()) {
                 stringBuilder.append(scanner.nextLine());
             }
-            String json = stringBuilder.toString();
+            String data = stringBuilder.toString();
 
-            var typeToken = new TypeToken<ArrayList<Asset>>() {};
-            assets = gson.fromJson(json, typeToken);
+            var assets = serializer.deserialize(data);
 
             fileReader.close();
             System.out.println("Assets loaded successfully.");
+
+            return assets == null ? new ArrayList<>() : assets;
         } catch (FileNotFoundException e){
             System.out.println("Assets file not found. Creating a new file...");
             createAssetsFile();
@@ -55,7 +52,7 @@ public class AssetLoader {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return assets == null ? new ArrayList<>() : assets;
+        return new ArrayList<>();
     }
 
     private void createAssetsFile() {
