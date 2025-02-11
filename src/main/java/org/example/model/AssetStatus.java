@@ -2,6 +2,5 @@ package org.example.model;
 
 public enum AssetStatus {
     Exist,
-    Borrowed,
-    Banned
+    Borrowed
 }
