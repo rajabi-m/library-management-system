@@ -14,10 +14,6 @@ public class LibraryTests {
                 return "";
             }
 
-            @Override
-            public String toCsv() {
-                return "";
-            }
         };
 
         assertEquals(0, library.getAssets().size());
@@ -32,11 +28,6 @@ public class LibraryTests {
             public String display() {
                 return "";
             }
-
-            @Override
-            public String toCsv() {
-                return "";
-            }
         };
 
         Asset asset2 = new Asset("sameTitle") {
@@ -46,10 +37,6 @@ public class LibraryTests {
                 return "";
             }
 
-            @Override
-            public String toCsv() {
-                return "";
-            }
         };
         library.addAsset(asset1);
         library.addAsset(asset2);
@@ -63,11 +50,6 @@ public class LibraryTests {
         Asset asset1 = new Asset("asset1") {
             @Override
             public String display() {
-                return "";
-            }
-
-            @Override
-            public String toCsv() {
                 return "";
             }
         };
@@ -87,20 +69,10 @@ public class LibraryTests {
             public String display() {
                 return "";
             }
-
-            @Override
-            public String toCsv() {
-                return "";
-            }
         };
         Asset asset2 = new Asset("asset two is here") {
             @Override
             public String display() {
-                return "";
-            }
-
-            @Override
-            public String toCsv() {
                 return "";
             }
         };
