@@ -102,6 +102,7 @@ public class Library {
         var output = new ArrayList<AssetDTO>();
         var queryResult = invertedIndexMap.query(words);
         for (String assetId : queryResult) {
+            if (!assetsMap.containsKey(assetId)) continue;
             var asset = assetsMap.get(assetId);
             var assetDTO = new AssetDTO(asset.getId(), asset.toString());
             output.add(assetDTO);
