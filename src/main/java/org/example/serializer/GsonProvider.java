@@ -6,8 +6,8 @@ import org.example.model.Asset;
 import org.example.model.Book;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
-import org.example.serializer.gson_adapters.LocalDateTypeAdapter;
-import org.example.serializer.gson_adapters.RuntimeTypeAdapterFactory;
+import org.example.serializer.gson_adapter.LocalDateTypeAdapter;
+import org.example.serializer.gson_adapter.RuntimeTypeAdapterFactory;
 
 import java.time.LocalDate;
 

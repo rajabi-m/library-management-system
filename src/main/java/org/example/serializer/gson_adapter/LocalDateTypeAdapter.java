@@ -1,4 +1,4 @@
-package org.example.serializer.gson_adapters;
+package org.example.serializer.gson_adapter;
 
 import com.google.gson.*;
 

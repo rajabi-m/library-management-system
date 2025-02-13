@@ -3,10 +3,10 @@ package org.example.serializer;
 import com.example.model.proto.ProtoMessages;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.example.model.*;
-import org.example.serializer.proto_adapters.BookProtoAdapter;
-import org.example.serializer.proto_adapters.MagazineProtoAdapter;
-import org.example.serializer.proto_adapters.ProtoAdapter;
-import org.example.serializer.proto_adapters.ThesisProtoAdapter;
+import org.example.serializer.proto_adapter.BookProtoAdapter;
+import org.example.serializer.proto_adapter.MagazineProtoAdapter;
+import org.example.serializer.proto_adapter.ProtoAdapter;
+import org.example.serializer.proto_adapter.ThesisProtoAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

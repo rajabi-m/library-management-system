@@ -1,7 +1,6 @@
-package org.example.serializer.proto_adapters;
+package org.example.serializer.proto_adapter;
 
 import com.example.model.proto.ProtoMessages;
-import com.google.protobuf.GeneratedMessage;
 
 public interface ProtoAdapter<T> {
     ProtoMessages.Asset toProto(T object);

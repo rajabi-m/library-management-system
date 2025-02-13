@@ -1,4 +1,4 @@
-package org.example.model.data_structures;
+package org.example.model.data_structure;
 
 import java.util.ArrayList;
 import java.util.HashMap;

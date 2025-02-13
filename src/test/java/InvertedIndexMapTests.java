@@ -1,4 +1,4 @@
-import org.example.model.data_structures.InvertedIndexMap;
+import org.example.model.data_structure.InvertedIndexMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

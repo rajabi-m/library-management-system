@@ -1,6 +1,6 @@
 package org.example.model;
 
-import org.example.model.data_structures.InvertedIndexMap;
+import org.example.model.data_structure.InvertedIndexMap;
 import org.example.model.dto.AssetDTO;
 
 import java.time.LocalDate;
