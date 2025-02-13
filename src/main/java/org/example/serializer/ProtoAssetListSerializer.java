@@ -2,7 +2,10 @@ package org.example.serializer;
 
 import com.example.model.proto.ProtoMessages;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.example.model.*;
+import org.example.model.Asset;
+import org.example.model.Book;
+import org.example.model.Magazine;
+import org.example.model.Thesis;
 import org.example.serializer.proto_adapter.BookProtoAdapter;
 import org.example.serializer.proto_adapter.MagazineProtoAdapter;
 import org.example.serializer.proto_adapter.ProtoAdapter;

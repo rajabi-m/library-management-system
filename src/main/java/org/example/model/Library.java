@@ -62,7 +62,7 @@ public class Library {
         return output;
     }
 
-    public ArrayList<AssetDTO> getAssets() {
+    public ArrayList<AssetDTO> getAllAssets() {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
             output.add(new AssetDTO(asset.getId(), asset.toString()));
@@ -70,7 +70,7 @@ public class Library {
         return output;
     }
 
-    public ArrayList<AssetDTO> getBorrowableAssets() {
+    public ArrayList<AssetDTO> getAllBorrowableAssets() {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
             if (!(asset instanceof BorrowableAsset borrowableAsset)) {
@@ -107,11 +107,6 @@ public class Library {
             output.add(assetDTO);
         }
         return output;
-    }
-
-    public String borrowAssetById(String assetId) {
-        var returnDate = LocalDate.now().plusDays(14);
-        return borrowAssetById(assetId, returnDate);
     }
 
     public String borrowAssetById(String assetId, LocalDate returnDate) {

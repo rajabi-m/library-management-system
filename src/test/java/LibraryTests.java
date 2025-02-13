@@ -16,9 +16,9 @@ public class LibraryTests {
 
         };
 
-        assertEquals(0, library.getAssets().size());
+        assertEquals(0, library.getAllAssets().size());
         library.addAsset(asset1);
-        assertEquals(1, library.getAssets().size());
+        assertEquals(1, library.getAllAssets().size());
     }
     @Test
     public void addBook_whenAssetExists_shouldReturnError(){
@@ -41,7 +41,7 @@ public class LibraryTests {
         library.addAsset(asset1);
         library.addAsset(asset2);
 
-        assertEquals(1, library.getAssets().size());
+        assertEquals(1, library.getAllAssets().size());
     }
 
     @Test
@@ -55,10 +55,10 @@ public class LibraryTests {
         };
 
         library.addAsset(asset1);
-        assertEquals(1, library.getAssets().size());
+        assertEquals(1, library.getAllAssets().size());
 
         library.removeAssetById(asset1.getId());
-        assertEquals(0, library.getAssets().size());
+        assertEquals(0, library.getAllAssets().size());
     }
 
     @Test

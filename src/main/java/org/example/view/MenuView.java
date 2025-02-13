@@ -6,8 +6,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
-public abstract class MenuView {
-    private boolean isMenuRunning = true;
+public abstract class MenuView implements Runnable {
+    private boolean menuRunning = true;
     protected final Scanner scanner;
     protected final OutputDisplay outputDisplay;
     private CommandTemplate[] commands = {
@@ -20,10 +20,10 @@ public abstract class MenuView {
         this.outputDisplay = outputDisplay;
     }
 
-    public void run() throws Exception{
+    public void run() {
         onMenuInitialize();
         printCommandList();
-        while (isMenuRunning){
+        while (menuRunning){
             System.out.print("> ");
             try {
                 int choice = scanner.nextInt();
@@ -32,6 +32,8 @@ public abstract class MenuView {
             } catch (InputMismatchException e){
                 System.out.println("Invalid input! Please enter a number.");
                 scanner.nextLine(); // Clear the invalid input
+            } catch (Exception e){
+                throw new RuntimeException(e);
             }
         }
     }
@@ -79,8 +81,12 @@ public abstract class MenuView {
     }
 
     private String exitCommand() {
-        isMenuRunning = false;
+        menuRunning = false;
         return "Exiting the program!";
+    }
+
+    public boolean isMenuRunning() {
+        return menuRunning;
     }
 
     protected record CommandTemplate(String commandName, String commandDescription, Callable<String> function) {}

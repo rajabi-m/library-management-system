@@ -3,7 +3,13 @@ package org.example;
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
 import org.example.model.Library;
+import org.example.service.LibraryManagementService;
+import org.example.service.requests.Request;
+import org.example.service.response.Response;
 import org.example.view.MainMenuView;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
     // using target/ folder to store files, so they are ignored by git
@@ -14,8 +20,10 @@ public class Main {
 
     private static AssetLoader assetLoader;
 
+    private final static BlockingQueue<Request> requestQueue = new LinkedBlockingQueue<>();
+    private final static BlockingQueue<Response<?>> responseQueue = new LinkedBlockingQueue<>();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         initializeFields();
         var library = loadLibrary();
 
@@ -24,9 +32,14 @@ public class Main {
             saveLibrary(library);
         }));
 
+        Thread libraryManagementThread = new Thread(new LibraryManagementService(library, requestQueue, responseQueue));
+        libraryManagementThread.setDaemon(true);
+        libraryManagementThread.start();
+
         var outputDisplay = debugMode ? new CLIOutputDisplay() : new FileOutputDisplay(outputFilePath);
-        MainMenuView mainMenuView = new MainMenuView(library, outputDisplay);
-        mainMenuView.run();
+        MainMenuView mainMenuView = new MainMenuView(outputDisplay, requestQueue, responseQueue);
+        Thread mainMenuViewThread = new Thread(mainMenuView);
+        mainMenuViewThread.start();
     }
 
     private static void saveLibrary(Library library) {

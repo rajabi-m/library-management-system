@@ -1,14 +1,12 @@
 package org.example;
 
 import org.example.model.Asset;
-import org.example.serializer.JsonAssetListSerializer;
 import org.example.serializer.ProtoAssetListSerializer;
 import org.example.serializer.Serializer;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class AssetLoader {
     private final String filePath;
