@@ -1,20 +1,21 @@
 package org.example.model.data_structure;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InvertedIndexMap<T, R> {
     private final Map<T, List<R>> map;
 
     public InvertedIndexMap() {
-        this.map = new HashMap<>();
+        this.map = new ConcurrentHashMap<>();
     }
 
     public void add(T key, R value) {
         if (!map.containsKey(key)) {
-            map.put(key, new ArrayList<>());
+            map.put(key, new CopyOnWriteArrayList<>());
         }
         map.get(key).add(value);
     }

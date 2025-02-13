@@ -28,9 +28,7 @@ public class Main {
         var library = loadLibrary();
 
         // Create shutdown hook to save program data
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            saveLibrary(library);
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> saveLibrary(library)));
 
         Thread libraryManagementThread = new Thread(new LibraryManagementService(library, requestQueue, responseQueue));
         libraryManagementThread.setDaemon(true);

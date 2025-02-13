@@ -5,21 +5,21 @@ import org.example.model.dto.AssetDTO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Library {
-    private final HashMap<String, Asset> assetsMap;
+    private final ConcurrentHashMap<String, Asset> assetsMap;
     private final InvertedIndexMap<String, String> invertedIndexMap;
 
     // Constructor
     public Library() {
         this.invertedIndexMap = new InvertedIndexMap<>();
-        this.assetsMap = new HashMap<>();
+        this.assetsMap = new ConcurrentHashMap<>();
     }
 
     public Library(List<Asset> assets) {
-        this.assetsMap = new HashMap<>();
+        this.assetsMap = new ConcurrentHashMap<>();
         this.invertedIndexMap = new InvertedIndexMap<>();
 
         for (var asset: assets) {
