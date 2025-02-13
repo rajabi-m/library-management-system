@@ -28,7 +28,7 @@ public class Library {
     }
 
     // Methods
-    public String addAsset(Asset asset) {
+    public synchronized String addAsset(Asset asset) {
         if (assetsMap.containsValue(asset)) {
             return "Asset already exists in the library!";
         }
@@ -43,7 +43,7 @@ public class Library {
         return "Asset added successfully!";
     }
 
-    public String removeAssetById(String assetId) {
+    public synchronized String removeAssetById(String assetId) {
         if (!assetsMap.containsKey(assetId)) {
             return "Asset does not exist in the library!";
         }
@@ -110,7 +110,7 @@ public class Library {
         return output;
     }
 
-    public String borrowAssetById(String assetId, LocalDate returnDate) {
+    public synchronized String borrowAssetById(String assetId, LocalDate returnDate) {
         if (!assetsMap.containsKey(assetId)) {
             return "Asset does not exist in the library!";
         }
@@ -126,7 +126,7 @@ public class Library {
         return "Asset successfully borrowed";
     }
 
-    public String returnAssetById(String assetId) {
+    public synchronized String returnAssetById(String assetId) {
         if (!assetsMap.containsKey(assetId)) {
             return "Asset does not exist in the library!";
         }
