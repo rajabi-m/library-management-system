@@ -1,4 +1,5 @@
 import org.example.model.Asset;
+import org.example.model.Book;
 import org.example.model.Library;
 import org.junit.jupiter.api.Test;
 
@@ -6,38 +7,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LibraryTests {
     @Test
-    public void addBook_basicTest(){
+    public void addBook_basicTest() {
         Library library = new Library();
-        Asset asset1 = new Asset("asset") {
-            @Override
-            public String display() {
-                return "";
-            }
-
-        };
+        Asset asset1 = new Book("asset1", "author1", 2021);
 
         assertEquals(0, library.getAllAssets().size());
         library.addAsset(asset1);
         assertEquals(1, library.getAllAssets().size());
     }
+
     @Test
-    public void addBook_whenAssetExists_shouldReturnError(){
+    public void addBook_whenAssetExists_shouldReturnError() {
         Library library = new Library();
-        Asset asset1 = new Asset("sameTitle") {
-            @Override
-            public String display() {
-                return "";
-            }
-        };
+        Asset asset1 = new Book("sameTitle", "sameAuthor", 2000);
+        Asset asset2 = new Book("sameTitle", "sameAuthor", 2000);
 
-        Asset asset2 = new Asset("sameTitle") {
-
-            @Override
-            public String display() {
-                return "";
-            }
-
-        };
         library.addAsset(asset1);
         library.addAsset(asset2);
 
@@ -45,14 +29,9 @@ public class LibraryTests {
     }
 
     @Test
-    public void removeBook_basicTest(){
+    public void removeBook_basicTest() {
         Library library = new Library();
-        Asset asset1 = new Asset("asset1") {
-            @Override
-            public String display() {
-                return "";
-            }
-        };
+        Asset asset1 = new Book("asset1", "author1", 2021);
 
         library.addAsset(asset1);
         assertEquals(1, library.getAllAssets().size());
@@ -62,20 +41,10 @@ public class LibraryTests {
     }
 
     @Test
-    public void queryAssets_basicTest(){
+    public void queryAssets_basicTest() {
         Library library = new Library();
-        Asset asset1 = new Asset("asset one is here") {
-            @Override
-            public String display() {
-                return "";
-            }
-        };
-        Asset asset2 = new Asset("asset two is here") {
-            @Override
-            public String display() {
-                return "";
-            }
-        };
+        Asset asset1 = new Book("asset one is here", "author1", 2021);
+        Asset asset2 = new Book("asset two is here", "author1", 2021);
 
         library.addAsset(asset1);
         library.addAsset(asset2);
