@@ -28,28 +28,32 @@ public class Library {
     }
 
     // Methods
-    public synchronized String addAsset(Asset asset) {
-        if (assetsMap.containsValue(asset)) {
-            return "Asset already exists in the library!";
-        }
+    public String addAsset(Asset asset) {
+        synchronized (assetsMap) {
+            if (assetsMap.containsValue(asset)) {
+                return "Asset already exists in the library!";
+            }
 
-        assetsMap.put(asset.getId(), asset);
+            assetsMap.put(asset.getId(), asset);
 
-        String[] words = asset.getTitle().split(" ");
-        for (String word : words) {
-            if (word.isBlank()) continue;
-            this.invertedIndexMap.add(word, asset.getId());
+            String[] words = asset.getTitle().split(" ");
+            for (String word : words) {
+                if (word.isBlank()) continue;
+                this.invertedIndexMap.add(word, asset.getId());
+            }
+            return "Asset added successfully!";
         }
-        return "Asset added successfully!";
     }
 
-    public synchronized String removeAssetById(String assetId) {
-        if (!assetsMap.containsKey(assetId)) {
-            return "Asset does not exist in the library!";
-        }
+    public String removeAssetById(String assetId) {
+        synchronized (assetsMap) {
+            if (!assetsMap.containsKey(assetId)) {
+                return "Asset does not exist in the library!";
+            }
 
-        this.assetsMap.remove(assetId);
-        return "Asset removed successfully!";
+            this.assetsMap.remove(assetId);
+            return "Asset removed successfully!";
+        }
     }
 
     public ArrayList<AssetDTO> getAssetsByTitle(String title){
@@ -110,35 +114,39 @@ public class Library {
         return output;
     }
 
-    public synchronized String borrowAssetById(String assetId, LocalDate returnDate) {
-        if (!assetsMap.containsKey(assetId)) {
-            return "Asset does not exist in the library!";
+    public String borrowAssetById(String assetId, LocalDate returnDate) {
+        synchronized (assetsMap){
+            if (!assetsMap.containsKey(assetId)) {
+                return "Asset does not exist in the library!";
+            }
+
+            Asset asset = assetsMap.get(assetId);
+
+            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
+                return "This asset is not available for borrowing";
+            }
+
+            borrowableAsset.setStatus(AssetStatus.Borrowed);
+            borrowableAsset.setReturnDate(returnDate);
+            return "Asset successfully borrowed";
         }
-
-        Asset asset = assetsMap.get(assetId);
-
-        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
-            return "This asset is not available for borrowing";
-        }
-
-        borrowableAsset.setStatus(AssetStatus.Borrowed);
-        borrowableAsset.setReturnDate(returnDate);
-        return "Asset successfully borrowed";
     }
 
-    public synchronized String returnAssetById(String assetId) {
-        if (!assetsMap.containsKey(assetId)) {
-            return "Asset does not exist in the library!";
-        }
+    public String returnAssetById(String assetId) {
+        synchronized (assetsMap) {
+            if (!assetsMap.containsKey(assetId)) {
+                return "Asset does not exist in the library!";
+            }
 
-        Asset asset = assetsMap.get(assetId);
-        if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
-            return "This asset is not borrowed";
-        }
+            Asset asset = assetsMap.get(assetId);
+            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
+                return "This asset is not borrowed";
+            }
 
-        borrowableAsset.setStatus(AssetStatus.Exist);
-        borrowableAsset.setReturnDate(null);
-        return "Asset successfully brought back";
+            borrowableAsset.setStatus(AssetStatus.Exist);
+            borrowableAsset.setReturnDate(null);
+            return "Asset successfully brought back";
+        }
     }
 
     public List<Asset> getAllAssetObjects() {
