@@ -23,36 +23,41 @@ public abstract class MenuView implements Runnable {
     public void run() {
         onMenuInitialize();
         printCommandList();
-        while (menuRunning){
+        while (menuRunning) {
             System.out.print("> ");
             try {
                 int choice = scanner.nextInt();
                 scanner.nextLine();
                 handleMenuChoice(choice);
-            } catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a number.");
                 scanner.nextLine(); // Clear the invalid input
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
+
+        onMenuClose();
     }
 
-    protected void addCommands(CommandTemplate[] newCommands){
+    public abstract void onMenuClose();
+
+    protected void addCommands(CommandTemplate[] newCommands) {
         CommandTemplate[] mergedCommands = new CommandTemplate[newCommands.length + commands.length];
         System.arraycopy(newCommands, 0, mergedCommands, 0, newCommands.length);
         System.arraycopy(commands, 0, mergedCommands, newCommands.length, commands.length);
         this.commands = mergedCommands;
     }
 
-    protected void onMenuInitialize(){}
+    protected void onMenuInitialize() {
+    }
 
-    private void printCommandList(){
+    private void printCommandList() {
         System.out.println(availableCommandsString());
     }
 
-    private void handleMenuChoice(int choice) throws Exception{
-        if (choice < 1 || choice > commands.length){
+    private void handleMenuChoice(int choice) throws Exception {
+        if (choice < 1 || choice > commands.length) {
             outputDisplay.display("Invalid choice!");
             return;
         }
@@ -71,7 +76,7 @@ public abstract class MenuView implements Runnable {
         outputDisplay.display(output);
     }
 
-    protected String availableCommandsString(){
+    protected String availableCommandsString() {
         // Create String with all available commands
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < commands.length; i++) {
@@ -89,5 +94,6 @@ public abstract class MenuView implements Runnable {
         return menuRunning;
     }
 
-    protected record CommandTemplate(String commandName, String commandDescription, Callable<String> function) {}
+    protected record CommandTemplate(String commandName, String commandDescription, Callable<String> function) {
+    }
 }

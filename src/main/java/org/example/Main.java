@@ -12,6 +12,8 @@ import org.example.service.response.Response;
 import org.example.view.MainMenuView;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
@@ -33,14 +35,16 @@ public class Main {
         // Create shutdown hook to save program data
         Runtime.getRuntime().addShutdownHook(new Thread(() -> saveLibrary(library)));
 
-        Thread libraryManagementThread = new Thread(new LibraryManagementService(library, requestQueue, responseQueue));
-        libraryManagementThread.setDaemon(true);
-        libraryManagementThread.start();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        LibraryManagementService libraryManagementService = new LibraryManagementService(library, requestQueue, responseQueue);
+        executorService.submit(libraryManagementService);
 
         var outputDisplay = debugMode ? new CLIOutputDisplay() : new FileOutputDisplay(outputFilePath);
         MainMenuView mainMenuView = new MainMenuView(outputDisplay, requestQueue, responseQueue);
-        Thread mainMenuViewThread = new Thread(mainMenuView);
-        mainMenuViewThread.start();
+        executorService.submit(mainMenuView);
+
+        executorService.shutdown();
     }
 
     private static void saveLibrary(Library library) {

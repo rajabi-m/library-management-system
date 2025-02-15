@@ -17,6 +17,7 @@ public class LibraryManagementService implements Runnable {
     private final Library library;
     private final BlockingQueue<Request> requestQueue;
     private final BlockingQueue<Response<?>> responseQueue;
+    private boolean serviceRunning = true;
 
     private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
@@ -39,11 +40,12 @@ public class LibraryManagementService implements Runnable {
         requestHandlers.put(ReturnAssetRequest.class, this::returnAssetHandler);
         requestHandlers.put(UpdateAssetRequest.class, this::updateAssetHandler);
         requestHandlers.put(GetAssetByIdRequest.class, this::getAssetByIdHandler);
+        requestHandlers.put(CloseServiceRequest.class, this::closeServiceHandler);
     }
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()){
+        while (serviceRunning) {
             try {
                 Request request = requestQueue.take();
                 Function<Request, Response<?>> handler = requestHandlers.getOrDefault(
@@ -58,8 +60,13 @@ public class LibraryManagementService implements Runnable {
         }
     }
 
+    private Response<String> closeServiceHandler(Request request) {
+        serviceRunning = false;
+        return new Response<>("Service closed successfully!");
+    }
+
     private Response<String> addAssetHandler(Request request) {
-        if (!(request instanceof AddAssetRequest addAssetRequest)){
+        if (!(request instanceof AddAssetRequest addAssetRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -67,8 +74,8 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.addAsset(asset));
     }
 
-    private Response<String> removeAssetHandler(Request request){
-        if (!(request instanceof RemoveAssetRequest removeAssetRequest)){
+    private Response<String> removeAssetHandler(Request request) {
+        if (!(request instanceof RemoveAssetRequest removeAssetRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -76,16 +83,16 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.removeAssetById(assetId));
     }
 
-    private Response<ArrayList<AssetDTO>> getAllAssetsHandler(Request request){
-        if (!(request instanceof GetAllAssetsRequest)){
+    private Response<ArrayList<AssetDTO>> getAllAssetsHandler(Request request) {
+        if (!(request instanceof GetAllAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
         return new Response<>(library.getAllAssets());
     }
 
-    private Response<ArrayList<AssetDTO>> getAssetsByTitleHandler(Request request){
-        if (!(request instanceof GetAssetsByTitleRequest getAssetsByTitleRequest)){
+    private Response<ArrayList<AssetDTO>> getAssetsByTitleHandler(Request request) {
+        if (!(request instanceof GetAssetsByTitleRequest getAssetsByTitleRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -93,16 +100,16 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.getAssetsByTitle(title));
     }
 
-    private Response<ArrayList<AssetDTO>> getAllBorrowableAssetsHandler(Request request){
-        if (!(request instanceof GetAllBorrowableAssetsRequest)){
+    private Response<ArrayList<AssetDTO>> getAllBorrowableAssetsHandler(Request request) {
+        if (!(request instanceof GetAllBorrowableAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
         return new Response<>(library.getAllBorrowableAssets());
     }
 
-    private Response<ArrayList<AssetDTO>> getAssetsByTypeRequest (Request request){
-        if (!(request instanceof GetAssetsByTypeRequest getAssetsByTypeRequest)){
+    private Response<ArrayList<AssetDTO>> getAssetsByTypeRequest(Request request) {
+        if (!(request instanceof GetAssetsByTypeRequest getAssetsByTypeRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -110,8 +117,8 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.getAssetsByType(type));
     }
 
-    private Response<ArrayList<AssetDTO>> queryAssetsHandler(Request request){
-        if (!(request instanceof QueryAssetsRequest queryAssetsRequest)){
+    private Response<ArrayList<AssetDTO>> queryAssetsHandler(Request request) {
+        if (!(request instanceof QueryAssetsRequest queryAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -119,8 +126,8 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.queryAssets(query));
     }
 
-    private Response<String> borrowAssetHandler(Request request){
-        if (!(request instanceof BorrowAssetRequest borrowAssetRequest)){
+    private Response<String> borrowAssetHandler(Request request) {
+        if (!(request instanceof BorrowAssetRequest borrowAssetRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -129,8 +136,8 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.borrowAssetById(assetId, returnDate));
     }
 
-    private Response<String> returnAssetHandler(Request request){
-        if (!(request instanceof ReturnAssetRequest returnAssetRequest)){
+    private Response<String> returnAssetHandler(Request request) {
+        if (!(request instanceof ReturnAssetRequest returnAssetRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -138,8 +145,8 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.returnAssetById(assetId));
     }
 
-    private Response<String> updateAssetHandler(Request request){
-        if (!(request instanceof UpdateAssetRequest updateAssetRequest)){
+    private Response<String> updateAssetHandler(Request request) {
+        if (!(request instanceof UpdateAssetRequest updateAssetRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
@@ -148,12 +155,12 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.updateAssetByAssetId(assetId, asset));
     }
 
-    private Response<String> handleUnsupportedRequest(Request request){
+    private Response<String> handleUnsupportedRequest(Request request) {
         return new Response<>("Request type not supported!");
     }
 
-    private Response<AssetDTO> getAssetByIdHandler(Request request){
-        if (!(request instanceof GetAssetByIdRequest getAssetByIdRequest)){
+    private Response<AssetDTO> getAssetByIdHandler(Request request) {
+        if (!(request instanceof GetAssetByIdRequest getAssetByIdRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 

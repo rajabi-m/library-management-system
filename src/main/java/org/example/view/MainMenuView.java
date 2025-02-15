@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
-public class MainMenuView extends MenuView{
+public class MainMenuView extends MenuView {
     private static final String welcomeText = """
             welcome to the library!
             Please choose an option:
@@ -53,7 +53,7 @@ public class MainMenuView extends MenuView{
     private final BlockingQueue<Request> requestQueue;
     private final BlockingQueue<Response<?>> responseQueue;
 
-    public MainMenuView(OutputDisplay outputDisplay, BlockingQueue<Request> requestQueue, BlockingQueue<Response<?>> responseQueue){
+    public MainMenuView(OutputDisplay outputDisplay, BlockingQueue<Request> requestQueue, BlockingQueue<Response<?>> responseQueue) {
         super(new Scanner(System.in), outputDisplay);
         this.requestQueue = requestQueue;
         this.responseQueue = responseQueue;
@@ -61,11 +61,17 @@ public class MainMenuView extends MenuView{
     }
 
     @Override
+    public void onMenuClose() {
+        Response<String> response = sendRequestAndWaitForResponse(new CloseServiceRequest());
+        System.out.println(response.data());
+    }
+
+    @Override
     protected void onMenuInitialize() {
         System.out.println(welcomeText);
     }
 
-    private <T> Response<T> sendRequestAndWaitForResponse(Request request){
+    private <T> Response<T> sendRequestAndWaitForResponse(Request request) {
         try {
             requestQueue.put(request);
             Response<?> response = responseQueue.take();
@@ -73,10 +79,10 @@ public class MainMenuView extends MenuView{
             @SuppressWarnings("unchecked")
             var castedResponse = (Response<T>) response;
             return castedResponse;
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException("Invalid response type: " + e.getMessage());
         }
     }
@@ -89,7 +95,7 @@ public class MainMenuView extends MenuView{
 
         var assetDTOS = response.data();
 
-        if (assetDTOS.isEmpty()){
+        if (assetDTOS.isEmpty()) {
             return "No assets found";
         }
 
@@ -101,7 +107,7 @@ public class MainMenuView extends MenuView{
 
         var assetDTOS = response.data();
 
-        if (assetDTOS.isEmpty()){
+        if (assetDTOS.isEmpty()) {
             return "There are no assets in library";
         }
 
@@ -127,15 +133,15 @@ public class MainMenuView extends MenuView{
             Response<String> response = sendRequestAndWaitForResponse(new AddAssetRequest(asset));
 
             return response.data();
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return "An error occurred while creating/adding the asset: " + e.getMessage();
         }
     }
 
-    private String removeAssetCommand(){
+    private String removeAssetCommand() {
         AssetDTO assetDTO = getAssetFromUser();
 
-        if (assetDTO == null){
+        if (assetDTO == null) {
             return "No asset found or selected.";
         }
 
@@ -146,7 +152,7 @@ public class MainMenuView extends MenuView{
         return response.data();
     }
 
-    private AssetDTO getAssetFromUser(){
+    private AssetDTO getAssetFromUser() {
         System.out.println("Enter asset title: ");
         String query = scanner.nextLine();
 
@@ -154,7 +160,7 @@ public class MainMenuView extends MenuView{
 
         var assets = response.data();
 
-        if (assets.isEmpty()){
+        if (assets.isEmpty()) {
             return null;
         }
 
@@ -170,14 +176,14 @@ public class MainMenuView extends MenuView{
             scanner.nextLine();
         } while (choice < 1 || choice > assets.size() + 1);
 
-        if (choice == assets.size() + 1){
+        if (choice == assets.size() + 1) {
             return null;
         }
 
         return assets.get(choice - 1);
     }
 
-    private String getAssetsByTypeCommand(){
+    private String getAssetsByTypeCommand() {
         System.out.println("Here is the list of all asset types: ");
         printAssetTypes();
         System.out.println("Enter asset type: ");
@@ -186,16 +192,16 @@ public class MainMenuView extends MenuView{
         Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAssetsByTypeRequest(type));
         var assetDTOS = response.data();
 
-        if (assetDTOS.isEmpty()){
+        if (assetDTOS.isEmpty()) {
             return "No assets found with type: " + type;
         }
 
         return convertAssetDTOListToHumanReadableString(assetDTOS);
     }
 
-    private String borrowAssetCommand(){
+    private String borrowAssetCommand() {
         var assetDTO = getAssetFromUser();
-        if (assetDTO == null){
+        if (assetDTO == null) {
             return "No asset found or selected";
         }
 
@@ -205,7 +211,7 @@ public class MainMenuView extends MenuView{
         String returnDateString = scanner.nextLine();
         LocalDate returnDate = RegexUtils.parseDate(returnDateString);
 
-        if (returnDate == null){
+        if (returnDate == null) {
             return "Invalid date format";
         }
 
@@ -214,9 +220,9 @@ public class MainMenuView extends MenuView{
         return response.data();
     }
 
-    private String returnAssetCommand(){
+    private String returnAssetCommand() {
         AssetDTO assetDTO = getAssetFromUser();
-        if (assetDTO == null){
+        if (assetDTO == null) {
             return "No asset found or selected";
         }
         var assetId = assetDTO.id();
@@ -226,11 +232,11 @@ public class MainMenuView extends MenuView{
         return response.data();
     }
 
-    private String getBorrowableAssetsStatusCommand(){
+    private String getBorrowableAssetsStatusCommand() {
         Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllBorrowableAssetsRequest());
         ArrayList<AssetDTO> borrowableAssets = response.data();
 
-        if (borrowableAssets.isEmpty()){
+        if (borrowableAssets.isEmpty()) {
             return "No borrowable assets found";
         }
 
@@ -239,11 +245,11 @@ public class MainMenuView extends MenuView{
 
     private String updateAssetCommand() {
         AssetDTO assetDTO = getAssetFromUser();
-        if (assetDTO == null){
+        if (assetDTO == null) {
             return "No asset found or selected";
         }
 
-        if (!assetFactories.containsKey(assetDTO.type())){
+        if (!assetFactories.containsKey(assetDTO.type())) {
             return "Invalid asset type: " + assetDTO.type();
         }
 
@@ -254,13 +260,13 @@ public class MainMenuView extends MenuView{
         return updateResponse.data();
     }
 
-    private static void printAssetTypes(){
+    private static void printAssetTypes() {
         for (var assetClass : assetClasses) {
             System.out.println(assetClass.getSimpleName());
         }
     }
 
-    private static String convertAssetDTOListToHumanReadableString(List<AssetDTO> assetDTOS){
+    private static String convertAssetDTOListToHumanReadableString(List<AssetDTO> assetDTOS) {
         StringBuilder output = new StringBuilder();
         for (AssetDTO assetDTO : assetDTOS) {
             output.append(assetDTO.description());
