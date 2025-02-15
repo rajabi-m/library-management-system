@@ -12,12 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class LibraryManagementService implements Runnable {
     private final Library library;
     private final BlockingQueue<Request> requestQueue;
     private final BlockingQueue<Response<?>> responseQueue;
     private boolean serviceRunning = true;
+
+    private final static Logger logger = Logger.getLogger(LibraryManagementService.class.getSimpleName());
 
     private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
@@ -48,11 +51,16 @@ public class LibraryManagementService implements Runnable {
         while (serviceRunning) {
             try {
                 Request request = requestQueue.take();
+                logger.info("Received request: " + request);
+
                 Function<Request, Response<?>> handler = requestHandlers.getOrDefault(
                         request.getClass(),
                         this::handleUnsupportedRequest
                 );
-                responseQueue.put(handler.apply(request));
+
+                Response<?> response = handler.apply(request);
+                logger.info("Sending response: " + response);
+                responseQueue.put(response);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

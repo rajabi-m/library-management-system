@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 public class MainMenuView extends MenuView {
     private static final String welcomeText = """
@@ -37,6 +38,8 @@ public class MainMenuView extends MenuView {
             new CommandTemplate("Get assets by title", "Get all assets with a specific title", this::getAssetsByTitleCommand),
             new CommandTemplate("Get assets by type", "Get all assets of a specific type", this::getAssetsByTypeCommand),
     };
+
+    private final static Logger logger = Logger.getLogger(MainMenuView.class.getSimpleName());
 
     private final static List<Class<? extends Asset>> assetClasses = List.of(
             Book.class,
@@ -73,8 +76,10 @@ public class MainMenuView extends MenuView {
 
     private <T> Response<T> sendRequestAndWaitForResponse(Request request) {
         try {
+            logger.info("Sending request: " + request);
             requestQueue.put(request);
             Response<?> response = responseQueue.take();
+            logger.info("Received response: " + response);
 
             @SuppressWarnings("unchecked")
             var castedResponse = (Response<T>) response;
