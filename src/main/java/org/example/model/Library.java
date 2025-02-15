@@ -36,12 +36,16 @@ public class Library {
 
             assetsMap.put(asset.getId(), asset);
 
-            String[] words = asset.getTitle().split(" ");
-            for (String word : words) {
-                if (word.isBlank()) continue;
-                this.invertedIndexMap.add(word, asset.getId());
-            }
+            indexAssetTitle(asset);
             return "Asset added successfully!";
+        }
+    }
+
+    private void indexAssetTitle(Asset asset) {
+        String[] words = asset.getTitle().split(" ");
+        for (String word : words) {
+            if (word.isBlank()) continue;
+            this.invertedIndexMap.add(word, asset.getId());
         }
     }
 
@@ -179,7 +183,14 @@ public class Library {
                 return "No changes detected";
             }
 
+            boolean titleChanged = !currentAsset.getTitle().equals(updatedAsset.getTitle());
+
             currentAsset.update(updatedAsset);
+
+            if (titleChanged) {
+                indexAssetTitle(currentAsset);
+            }
+
             return "Asset updated successfully";
         }
     }

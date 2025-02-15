@@ -33,9 +33,9 @@ public class InvertedIndexMap<T, R> {
         ArrayList<R> output = null;
         for (var key : keys) {
             var newResults = get(key);
+            if (newResults == null) newResults = new ArrayList<>();
 
             if (isFirst) {
-                if (newResults == null) return new ArrayList<>();
                 output = new ArrayList<>(newResults);
                 isFirst = false;
                 continue;
