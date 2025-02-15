@@ -29,6 +29,7 @@ public class MainMenuView extends MenuView{
     private final CommandTemplate[] commands = {
             new CommandTemplate("Add asset", "Add an asset to the library", this::addAssetCommand),
             new CommandTemplate("Remove asset", "Remove an asset from the library", this::removeAssetCommand),
+            new CommandTemplate("Update asset", "Update an asset in the library", this::updateAssetCommand),
             new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getBorrowableAssetsStatusCommand),
             new CommandTemplate("Borrow asset", "Borrow an asset of library", this::borrowAssetCommand),
             new CommandTemplate("Return asset", "Return the asset of library", this::returnAssetCommand),
@@ -132,18 +133,20 @@ public class MainMenuView extends MenuView{
     }
 
     private String removeAssetCommand(){
-        String assetId = getAssetFromUserAndReturnAssetId();
+        AssetDTO assetDTO = getAssetFromUser();
 
-        if (assetId == null){
+        if (assetDTO == null){
             return "No asset found or selected.";
         }
+
+        var assetId = assetDTO.id();
 
         Response<String> response = sendRequestAndWaitForResponse(new RemoveAssetRequest(assetId));
 
         return response.data();
     }
 
-    private String getAssetFromUserAndReturnAssetId(){
+    private AssetDTO getAssetFromUser(){
         System.out.println("Enter asset title: ");
         String query = scanner.nextLine();
 
@@ -171,7 +174,7 @@ public class MainMenuView extends MenuView{
             return null;
         }
 
-        return assets.get(choice - 1).id();
+        return assets.get(choice - 1);
     }
 
     private String getAssetsByTypeCommand(){
@@ -191,10 +194,12 @@ public class MainMenuView extends MenuView{
     }
 
     private String borrowAssetCommand(){
-        var assetId = getAssetFromUserAndReturnAssetId();
-        if (assetId == null){
+        var assetDTO = getAssetFromUser();
+        if (assetDTO == null){
             return "No asset found or selected";
         }
+
+        var assetId = assetDTO.id();
 
         System.out.println("Enter return date (yyyy-mm-dd): ");
         String returnDateString = scanner.nextLine();
@@ -210,10 +215,11 @@ public class MainMenuView extends MenuView{
     }
 
     private String returnAssetCommand(){
-        var assetId = getAssetFromUserAndReturnAssetId();
-        if (assetId == null){
+        AssetDTO assetDTO = getAssetFromUser();
+        if (assetDTO == null){
             return "No asset found or selected";
         }
+        var assetId = assetDTO.id();
 
         Response<String> response = sendRequestAndWaitForResponse(new ReturnAssetRequest(assetId));
 
@@ -229,6 +235,23 @@ public class MainMenuView extends MenuView{
         }
 
         return convertAssetDTOListToHumanReadableString(borrowableAssets);
+    }
+
+    private String updateAssetCommand() {
+        AssetDTO assetDTO = getAssetFromUser();
+        if (assetDTO == null){
+            return "No asset found or selected";
+        }
+
+        if (!assetFactories.containsKey(assetDTO.type())){
+            return "Invalid asset type: " + assetDTO.type();
+        }
+
+        var assetFactory = assetFactories.get(assetDTO.type());
+        var updatedAsset = assetFactory.createAsset(scanner);
+
+        Response<String> updateResponse = sendRequestAndWaitForResponse(new UpdateAssetRequest(assetDTO.id(), updatedAsset));
+        return updateResponse.data();
     }
 
     private static void printAssetTypes(){

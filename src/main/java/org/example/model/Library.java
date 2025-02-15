@@ -60,7 +60,7 @@ public class Library {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
             if (asset.getTitle().equals(title)) {
-                output.add(new AssetDTO(asset.getId(), asset.toString()));
+                output.add(AssetDTO.of(asset));
             }
         }
         return output;
@@ -69,7 +69,7 @@ public class Library {
     public ArrayList<AssetDTO> getAllAssets() {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
-            output.add(new AssetDTO(asset.getId(), asset.toString()));
+            output.add(AssetDTO.of(asset));
         }
         return output;
     }
@@ -80,7 +80,7 @@ public class Library {
             if (!(asset instanceof BorrowableAsset borrowableAsset)) {
                 continue;
             }
-            output.add(new AssetDTO(borrowableAsset.getId(), borrowableAsset.toString()));
+            output.add(AssetDTO.of(borrowableAsset));
         }
 
         return output;
@@ -90,7 +90,7 @@ public class Library {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : assetsMap.values()) {
             if (!asset.getClass().getSimpleName().equals(type)) continue;
-            output.add(new AssetDTO(asset.getId(), asset.toString()));
+            output.add(AssetDTO.of(asset));
         }
         return output;
     }
@@ -108,7 +108,7 @@ public class Library {
         for (String assetId : queryResult) {
             if (!assetsMap.containsKey(assetId)) continue;
             var asset = assetsMap.get(assetId);
-            var assetDTO = new AssetDTO(asset.getId(), asset.toString());
+            var assetDTO = AssetDTO.of(asset);
             output.add(assetDTO);
         }
         return output;
@@ -144,12 +144,43 @@ public class Library {
             }
 
             borrowableAsset.setStatus(AssetStatus.Exist);
-            borrowableAsset.setReturnDate(null);
+            borrowableAsset.setReturnDate(BorrowableAsset.defaultReturnDate);
             return "Asset successfully brought back";
+        }
+    }
+
+    public AssetDTO getAssetById(String assetId) {
+        synchronized (assetsMap) {
+            if (!assetsMap.containsKey(assetId)) {
+                return null;
+            }
+
+            Asset asset = assetsMap.get(assetId);
+            return AssetDTO.of(asset);
         }
     }
 
     public List<Asset> getAllAssetObjects() {
         return new ArrayList<>(assetsMap.values());
+    }
+
+    public String updateAssetByAssetId(String assetId, Asset updatedAsset) {
+        synchronized (assetsMap) {
+            if (!assetsMap.containsKey(assetId)) {
+                return "Asset does not exist in the library!";
+            }
+            Asset currentAsset = assetsMap.get(assetId);
+
+            if (currentAsset.getClass() != updatedAsset.getClass()) {
+                return "Asset types do not match";
+            }
+
+            if (currentAsset.equals(updatedAsset)) {
+                return "No changes detected";
+            }
+
+            currentAsset.update(updatedAsset);
+            return "Asset updated successfully";
+        }
     }
 }

@@ -3,8 +3,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Magazine extends BorrowableAsset{
-    private final String publisher;
-    private final String releaseDate;
+    private String publisher;
+    private String releaseDate;
 
     public Magazine(String id, String title, String publisher, String releaseDate, AssetStatus status, LocalDate returnDate) {
         super(id, title, status, returnDate);
@@ -15,6 +15,14 @@ public class Magazine extends BorrowableAsset{
     public Magazine(String title, String publisher, String releaseDate) {
         super(title);
         this.publisher = publisher;
+        this.releaseDate = releaseDate;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -53,5 +61,13 @@ public class Magazine extends BorrowableAsset{
     @Override
     public String display() {
         return "Magazine: '" + getTitle() + "'";
+    }
+
+    @Override
+    public void update(Asset asset) {
+        if (!(asset instanceof Magazine magazine)) return;
+        setTitle(magazine.getTitle());
+        setPublisher(magazine.getPublisher());
+        setReleaseDate(magazine.getReleaseDate());
     }
 }

@@ -4,7 +4,9 @@ import java.time.LocalDate;
 
 public abstract class BorrowableAsset extends Asset {
     private AssetStatus status;
-    private LocalDate returnDate = LocalDate.EPOCH;
+    private LocalDate returnDate = defaultReturnDate;
+
+    public static final LocalDate defaultReturnDate = LocalDate.EPOCH;
 
     public BorrowableAsset(String id, String title, AssetStatus status, LocalDate returnDate) {
         super(id, title);

@@ -3,10 +3,10 @@ package org.example.model;
 import java.util.Objects;
 
 public class Thesis extends Asset{
-    private final String author;
-    private final String supervisor;
-    private final String department;
-    private final String publishDate;
+    private String author;
+    private String supervisor;
+    private String department;
+    private String publishDate;
 
     public Thesis(String id, String title, String author, String supervisor, String department, String publishDate) {
         super(id, title);
@@ -40,6 +40,22 @@ public class Thesis extends Asset{
         return publishDate;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setSupervisor(String supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setPublishDate(String publishDate) {
+        this.publishDate = publishDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,5 +86,15 @@ public class Thesis extends Asset{
     @Override
     public String display() {
         return "Thesis: '" + getTitle() + "' from '" + author + "' to '" + supervisor + "'";
+    }
+
+    @Override
+    public void update(Asset asset) {
+        if (!(asset instanceof Thesis thesis)) return;
+        setTitle(thesis.getTitle());
+        setAuthor(thesis.getAuthor());
+        setSupervisor(thesis.getSupervisor());
+        setDepartment(thesis.getDepartment());
+        setPublishDate(thesis.getPublishDate());
     }
 }

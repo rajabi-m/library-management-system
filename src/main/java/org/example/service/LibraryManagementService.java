@@ -8,6 +8,7 @@ import org.example.service.response.Response;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
@@ -17,22 +18,27 @@ public class LibraryManagementService implements Runnable {
     private final BlockingQueue<Request> requestQueue;
     private final BlockingQueue<Response<?>> responseQueue;
 
-    private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = Map.of(
-            AddAssetRequest.class, this::addAssetHandler,
-            RemoveAssetRequest.class, this::removeAssetHandler,
-            GetAllAssetsRequest.class, this::getAllAssetsHandler,
-            GetAssetsByTitleRequest.class, this::getAssetsByTitleHandler,
-            GetAllBorrowableAssetsRequest.class, this::getAllBorrowableAssetsHandler,
-            GetAssetsByTypeRequest.class, this::getAssetsByTypeRequest,
-            QueryAssetsRequest.class, this::queryAssetsHandler,
-            BorrowAssetRequest.class, this::borrowAssetHandler,
-            ReturnAssetRequest.class, this::returnAssetHandler
-    );
+    private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
     public LibraryManagementService(Library library, BlockingQueue<Request> requestQueue, BlockingQueue<Response<?>> responseQueue) {
         this.library = library;
         this.requestQueue = requestQueue;
         this.responseQueue = responseQueue;
+        initializeRequestHandlers();
+    }
+
+    private void initializeRequestHandlers() {
+        requestHandlers.put(AddAssetRequest.class, this::addAssetHandler);
+        requestHandlers.put(RemoveAssetRequest.class, this::removeAssetHandler);
+        requestHandlers.put(GetAllAssetsRequest.class, this::getAllAssetsHandler);
+        requestHandlers.put(GetAssetsByTitleRequest.class, this::getAssetsByTitleHandler);
+        requestHandlers.put(GetAllBorrowableAssetsRequest.class, this::getAllBorrowableAssetsHandler);
+        requestHandlers.put(GetAssetsByTypeRequest.class, this::getAssetsByTypeRequest);
+        requestHandlers.put(QueryAssetsRequest.class, this::queryAssetsHandler);
+        requestHandlers.put(BorrowAssetRequest.class, this::borrowAssetHandler);
+        requestHandlers.put(ReturnAssetRequest.class, this::returnAssetHandler);
+        requestHandlers.put(UpdateAssetRequest.class, this::updateAssetHandler);
+        requestHandlers.put(GetAssetByIdRequest.class, this::getAssetByIdHandler);
     }
 
     @Override
@@ -40,10 +46,10 @@ public class LibraryManagementService implements Runnable {
         while (!Thread.currentThread().isInterrupted()){
             try {
                 Request request = requestQueue.take();
-                if (!requestHandlers.containsKey(request.getClass())){
-                    responseQueue.put(new Response<>("Request type not supported!"));
-                }
-                var handler = requestHandlers.get(request.getClass());
+                Function<Request, Response<?>> handler = requestHandlers.getOrDefault(
+                        request.getClass(),
+                        this::handleUnsupportedRequest
+                );
                 responseQueue.put(handler.apply(request));
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -132,6 +138,26 @@ public class LibraryManagementService implements Runnable {
         return new Response<>(library.returnAssetById(assetId));
     }
 
+    private Response<String> updateAssetHandler(Request request){
+        if (!(request instanceof UpdateAssetRequest updateAssetRequest)){
+            throw new RuntimeException("Invalid request type!");
+        }
 
+        String assetId = updateAssetRequest.getAssetId();
+        Asset asset = updateAssetRequest.getUpdatedAsset();
+        return new Response<>(library.updateAssetByAssetId(assetId, asset));
+    }
 
+    private Response<String> handleUnsupportedRequest(Request request){
+        return new Response<>("Request type not supported!");
+    }
+
+    private Response<AssetDTO> getAssetByIdHandler(Request request){
+        if (!(request instanceof GetAssetByIdRequest getAssetByIdRequest)){
+            throw new RuntimeException("Invalid request type!");
+        }
+
+        String assetId = getAssetByIdRequest.getAssetId();
+        return new Response<>(library.getAssetById(assetId));
+    }
 }

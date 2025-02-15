@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public abstract class Asset {
     protected final String type;
-    private final String title;
-    private final String id;
+    private String title;
+    private String id;
 
     public Asset(String title){
         type = this.getClass().getSimpleName();
@@ -20,6 +20,14 @@ public abstract class Asset {
         this.title = title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -27,6 +35,8 @@ public abstract class Asset {
     public String getId() {
         return id;
     }
+
+    public abstract void update(Asset asset);
 
     public abstract String display();
 
