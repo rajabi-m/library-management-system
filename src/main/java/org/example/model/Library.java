@@ -13,18 +13,9 @@ public class Library {
     private final InvertedIndexMap<String, String> invertedIndexMap;
 
     // Constructor
-    public Library() {
+    private Library() {
         this.invertedIndexMap = new InvertedIndexMap<>();
         this.assetsMap = new ConcurrentHashMap<>();
-    }
-
-    public Library(List<Asset> assets) {
-        this.assetsMap = new ConcurrentHashMap<>();
-        this.invertedIndexMap = new InvertedIndexMap<>();
-
-        for (var asset: assets) {
-            this.addAsset(asset);
-        }
     }
 
     // Methods
@@ -60,7 +51,7 @@ public class Library {
         }
     }
 
-    public ArrayList<AssetDTO> getAssetsByTitle(String title){
+    public ArrayList<AssetDTO> getAssetsByTitle(String title) {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : this.assetsMap.values()) {
             if (asset.getTitle().equals(title)) {
@@ -90,7 +81,7 @@ public class Library {
         return output;
     }
 
-    public ArrayList<AssetDTO> getAssetsByType(String type){
+    public ArrayList<AssetDTO> getAssetsByType(String type) {
         var output = new ArrayList<AssetDTO>();
         for (Asset asset : assetsMap.values()) {
             if (!asset.getClass().getSimpleName().equals(type)) continue;
@@ -119,14 +110,14 @@ public class Library {
     }
 
     public String borrowAssetById(String assetId, LocalDate returnDate) {
-        synchronized (assetsMap){
+        synchronized (assetsMap) {
             if (!assetsMap.containsKey(assetId)) {
                 return "Asset does not exist in the library!";
             }
 
             Asset asset = assetsMap.get(assetId);
 
-            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist){
+            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Exist) {
                 return "This asset is not available for borrowing";
             }
 
@@ -143,7 +134,7 @@ public class Library {
             }
 
             Asset asset = assetsMap.get(assetId);
-            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed){
+            if (!(asset instanceof BorrowableAsset borrowableAsset) || borrowableAsset.getStatus() != AssetStatus.Borrowed) {
                 return "This asset is not borrowed";
             }
 
@@ -192,6 +183,20 @@ public class Library {
             }
 
             return "Asset updated successfully";
+        }
+    }
+
+    private static final class InstanceHolder {
+        private static final Library instance = new Library();
+    }
+
+    public static Library getInstance() {
+        return InstanceHolder.instance;
+    }
+
+    public void addAllAssets(List<Asset> assets) {
+        for (Asset asset : assets) {
+            addAsset(asset);
         }
     }
 }

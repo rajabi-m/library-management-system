@@ -57,7 +57,8 @@ public class Main {
 
     private static Library loadLibrary() {
         var assets = assetLoader.readAssetsFromFile();
-        var library = new Library(assets);
+        var library = Library.getInstance();
+        library.addAllAssets(assets);
         generateTestData(library);
         return library;
     }
