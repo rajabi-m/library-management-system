@@ -61,21 +61,16 @@ public class Library {
     }
 
     public ArrayList<AssetDTO> getAssetsByTitle(String title) {
-        var output = new ArrayList<AssetDTO>();
-        for (Asset asset : this.assetsMap.values()) {
-            if (asset.getTitle().equals(title)) {
-                output.add(AssetDTO.of(asset));
-            }
-        }
-        return output;
+        var output = assetsMap.values().parallelStream()
+                .filter(asset -> asset.getTitle().equals(title))
+                .map(AssetDTO::of)
+                .toList();
+        return new ArrayList<>(output);
     }
 
     public ArrayList<AssetDTO> getAllAssets() {
-        var output = new ArrayList<AssetDTO>();
-        for (Asset asset : this.assetsMap.values()) {
-            output.add(AssetDTO.of(asset));
-        }
-        return output;
+        var allAssetDTOS = assetsMap.values().stream().map(AssetDTO::of).toList();
+        return new ArrayList<>(allAssetDTOS);
     }
 
     public ArrayList<AssetDTO> getAllBorrowableAssets() {
