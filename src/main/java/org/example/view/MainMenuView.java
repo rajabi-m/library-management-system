@@ -1,15 +1,10 @@
 package org.example.view;
 
 import org.example.io.OutputDisplay;
-import org.example.model.Asset;
-import org.example.model.Book;
-import org.example.model.Magazine;
-import org.example.model.Thesis;
+import org.example.model.*;
 import org.example.model.dto.AssetDTO;
-import org.example.model.observer.AssetSubscriber;
 import org.example.service.requests.*;
 import org.example.service.response.Response;
-import org.example.util.ANSICodes;
 import org.example.util.RegexUtils;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
@@ -24,7 +19,7 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
-public class MainMenuView extends MenuView implements AssetSubscriber {
+public class MainMenuView extends MenuView {
     private static final String welcomeText = """
             welcome to the library!
             Please choose an option:
@@ -235,7 +230,10 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
         System.out.println("Asset is not borrowable. Do you want to subscribe to it? (y/n)");
         String choice = scanner.nextLine();
         if (choice.equals("y")) {
-            Response<String> response = sendRequestAndWaitForResponse(new SubscribeToAssetRequest(assetDTO.id(), this));
+            System.out.println("Enter subscriber username: ");
+            String subscriber = scanner.nextLine();
+            Request request = new SubscribeToAssetRequest(assetDTO.id(), new User(subscriber));
+            Response<String> response = sendRequestAndWaitForResponse(request);
             return response.data();
         } else if (choice.equals("n")) {
             return "Asset is not borrowable";
@@ -298,10 +296,5 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
         }
 
         return output.toString();
-    }
-
-    @Override
-    public void notify(String message) {
-        System.out.println(ANSICodes.GREEN + "Notification: " + ANSICodes.YELLOW + message + ANSICodes.RESET);
     }
 }
