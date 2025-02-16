@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 public class MainMenuView extends MenuView implements AssetSubscriber {
@@ -33,7 +34,7 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
             new CommandTemplate("Add asset", "Add an asset to the library", this::addAssetCommand),
             new CommandTemplate("Remove asset", "Remove an asset from the library", this::removeAssetCommand),
             new CommandTemplate("Update asset", "Update an asset in the library", this::updateAssetCommand),
-            new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getBorrowableAssetsStatusCommand),
+            new CommandTemplate("Get borrowable assets", "Get all assets that are borrowable", this::getAllBorrowableAssetsCommand),
             new CommandTemplate("Borrow asset", "Borrow an asset of library", this::borrowAssetCommand),
             new CommandTemplate("Return asset", "Return the asset of library", this::returnAssetCommand),
             new CommandTemplate("Get all assets", "Get all assets in the library", this::getAllAssetsCommand),
@@ -256,7 +257,7 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
         return response.data();
     }
 
-    private String getBorrowableAssetsStatusCommand() {
+    private String getAllBorrowableAssetsCommand() {
         Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllBorrowableAssetsRequest());
         ArrayList<AssetDTO> borrowableAssets = response.data();
 
@@ -264,7 +265,19 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
             return "No borrowable assets found";
         }
 
-        return convertAssetDTOListToHumanReadableString(borrowableAssets);
+        StringBuilder output = new StringBuilder();
+        BiConsumer<String, Boolean> convertAssetToString = (assetDescription, borrowable) -> {
+            output.append(borrowable ? ANSICodes.GREEN : ANSICodes.RED)
+                    .append(assetDescription)
+                    .append(ANSICodes.RESET)
+                    .append("\n");
+        };
+
+        borrowableAssets.forEach(assetDTO ->
+                convertAssetToString.accept(assetDTO.description(), assetDTO.borrowable())
+        );
+
+        return output.toString();
     }
 
     private String updateAssetCommand() {
