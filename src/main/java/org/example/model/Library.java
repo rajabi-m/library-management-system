@@ -40,11 +40,13 @@ public class Library {
     }
 
     private void indexAssetTitle(Asset asset) {
-        String[] words = asset.getTitle().split(" ");
-        for (String word : words) {
-            if (word.isBlank()) continue;
-            this.invertedIndexMap.add(word, asset.getId());
-        }
+        var words = List.of(asset.getTitle().split(" "));
+
+        words.forEach(word -> {
+            if (word.isBlank()) return;
+            word = word.toLowerCase();
+            invertedIndexMap.add(word, asset.getId());
+        });
     }
 
     public String removeAssetById(String assetId) {
@@ -98,6 +100,7 @@ public class Library {
     }
 
     public ArrayList<AssetDTO> queryAssets(String query) {
+        query = query.toLowerCase();
         ArrayList<String> words = splitWords(query);
 
         var output = new ArrayList<AssetDTO>();
