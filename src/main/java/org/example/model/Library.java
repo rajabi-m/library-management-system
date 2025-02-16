@@ -2,6 +2,8 @@ package org.example.model;
 
 import org.example.model.data_structure.InvertedIndexMap;
 import org.example.model.dto.AssetDTO;
+import org.example.model.strategy.ContainsAtLeastOneKeyStrategy;
+import org.example.model.strategy.InvertedIndexSearchStrategy;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Library {
     private final ConcurrentHashMap<String, Asset> assetsMap;
     private final InvertedIndexMap<String, String> invertedIndexMap;
+
+    private InvertedIndexSearchStrategy<String, String> invertedIndexSearchStrategy = new ContainsAtLeastOneKeyStrategy<>();
 
     // Constructor
     private Library() {
@@ -91,15 +95,10 @@ public class Library {
     }
 
     public ArrayList<AssetDTO> queryAssets(String query) {
-        String[] splitResult = query.split(" ");
-        ArrayList<String> words = new ArrayList<>();
-        for (String word : splitResult) {
-            if (word.isBlank()) continue;
-            words.add(word);
-        }
+        ArrayList<String> words = splitWords(query);
 
         var output = new ArrayList<AssetDTO>();
-        var queryResult = invertedIndexMap.query(words);
+        var queryResult = invertedIndexSearchStrategy.preformSearch(invertedIndexMap, words);
         for (String assetId : queryResult) {
             if (!assetsMap.containsKey(assetId)) continue;
             var asset = assetsMap.get(assetId);
@@ -107,6 +106,16 @@ public class Library {
             output.add(assetDTO);
         }
         return output;
+    }
+
+    private static ArrayList<String> splitWords(String query) {
+        String[] splitResult = query.split(" ");
+        ArrayList<String> words = new ArrayList<>();
+        for (String word : splitResult) {
+            if (word.isBlank()) continue;
+            words.add(word);
+        }
+        return words;
     }
 
     public String borrowAssetById(String assetId, LocalDate returnDate) {
@@ -198,5 +207,9 @@ public class Library {
         for (Asset asset : assets) {
             addAsset(asset);
         }
+    }
+
+    public void setInvertedIndexSearchStrategy(InvertedIndexSearchStrategy<String, String> invertedIndexSearchStrategy) {
+        this.invertedIndexSearchStrategy = invertedIndexSearchStrategy;
     }
 }
