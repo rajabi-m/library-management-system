@@ -292,10 +292,10 @@ public class MainMenuView extends MenuView implements AssetSubscriber {
 
     private static String convertAssetDTOListToHumanReadableString(List<AssetDTO> assetDTOS) {
         StringBuilder output = new StringBuilder();
-        for (AssetDTO assetDTO : assetDTOS) {
+        assetDTOS.forEach(assetDTO -> {
             output.append(assetDTO.description());
             output.append("\n");
-        }
+        });
 
         return output.toString();
     }
