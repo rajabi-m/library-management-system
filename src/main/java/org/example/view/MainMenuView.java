@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 import org.example.model.dto.AssetDTO;
+import org.example.service.ConnectionBridge;
 import org.example.service.requests.*;
 import org.example.service.response.Response;
 import org.example.util.ANSICodes;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
@@ -52,13 +52,11 @@ public class MainMenuView extends MenuView {
             Thesis.class.getSimpleName(), new ThesisFactory()
     );
 
-    private final BlockingQueue<Request> requestQueue;
-    private final BlockingQueue<Response<?>> responseQueue;
+    private final ConnectionBridge connectionBridge;
 
-    public MainMenuView(OutputDisplay outputDisplay, BlockingQueue<Request> requestQueue, BlockingQueue<Response<?>> responseQueue) {
+    public MainMenuView(OutputDisplay outputDisplay, ConnectionBridge connectionBridge) {
         super(new Scanner(System.in), outputDisplay);
-        this.requestQueue = requestQueue;
-        this.responseQueue = responseQueue;
+        this.connectionBridge = connectionBridge;
         addCommands(commands);
     }
 
@@ -74,21 +72,7 @@ public class MainMenuView extends MenuView {
     }
 
     private <T> Response<T> sendRequestAndWaitForResponse(Request request) {
-        try {
-            logger.info("Sending request: " + request);
-            requestQueue.put(request);
-            Response<?> response = responseQueue.take();
-            logger.info("Received response: " + response);
-
-            @SuppressWarnings("unchecked")
-            var castedResponse = (Response<T>) response;
-            return castedResponse;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        } catch (ClassCastException e) {
-            throw new RuntimeException("Invalid response type: " + e.getMessage());
-        }
+        return connectionBridge.sendRequestAndWaitForResponse(request);
     }
 
     private String getAssetsByTitleCommand() {

@@ -1,14 +1,28 @@
 import org.example.model.Asset;
 import org.example.model.Book;
 import org.example.model.Library;
+import org.example.model.strategy.ContainsAllKeysStrategy;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LibraryTests {
+    public static Library createLibrary() {
+        try {
+            Constructor<Library> constructor = Library.class.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            System.out.println(constructor);
+            return constructor.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     public void addBook_basicTest() {
-        Library library = new Library();
+        Library library = createLibrary();
         Asset asset1 = new Book("asset1", "author1", 2021);
 
         assertEquals(0, library.getAllAssets().size());
@@ -18,7 +32,7 @@ public class LibraryTests {
 
     @Test
     public void addBook_whenAssetExists_shouldReturnError() {
-        Library library = new Library();
+        Library library = createLibrary();
         Asset asset1 = new Book("sameTitle", "sameAuthor", 2000);
         Asset asset2 = new Book("sameTitle", "sameAuthor", 2000);
 
@@ -30,7 +44,7 @@ public class LibraryTests {
 
     @Test
     public void removeBook_basicTest() {
-        Library library = new Library();
+        Library library = createLibrary();
         Asset asset1 = new Book("asset1", "author1", 2021);
 
         library.addAsset(asset1);
@@ -42,7 +56,8 @@ public class LibraryTests {
 
     @Test
     public void queryAssets_basicTest() {
-        Library library = new Library();
+        Library library = createLibrary();
+        library.setInvertedIndexSearchStrategy(new ContainsAllKeysStrategy<>());
         Asset asset1 = new Book("asset one is here", "author1", 2021);
         Asset asset2 = new Book("asset two is here", "author1", 2021);
 

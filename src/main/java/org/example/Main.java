@@ -1,34 +1,33 @@
 package org.example;
 
+import com.google.gson.Gson;
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
 import org.example.model.Book;
 import org.example.model.Library;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
+import org.example.model.strategy.ContainsAllKeysStrategy;
+import org.example.model.strategy.ContainsAtLeastOneKeyStrategy;
+import org.example.serializer.GsonProvider;
+import org.example.serializer.JsonAssetListSerializer;
+import org.example.serializer.ProtoAssetListSerializer;
+import org.example.service.ConnectionBridge;
 import org.example.service.LibraryManagementService;
-import org.example.service.requests.Request;
-import org.example.service.response.Response;
 import org.example.view.MainMenuView;
 
-import java.util.concurrent.BlockingQueue;
+import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
-    // using target/ folder to store files, so they are ignored by git
-    private static final String booksDatabaseFilePath = "target/assets.json";
-    private static final String outputFilePath = "target/output.txt";
-
-    private final static boolean debugMode = true;
+    private static final String configFilePath = "config.json";
 
     private static AssetLoader assetLoader;
-
-    private final static BlockingQueue<Request> requestQueue = new LinkedBlockingQueue<>();
-    private final static BlockingQueue<Response<?>> responseQueue = new LinkedBlockingQueue<>();
+    private final static ConnectionBridge connectionBridge = new ConnectionBridge();
 
     public static void main(String[] args) {
+        loadConfigs();
         initializeFields();
         var library = loadLibrary();
 
@@ -37,14 +36,32 @@ public class Main {
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        LibraryManagementService libraryManagementService = new LibraryManagementService(library, requestQueue, responseQueue);
+        LibraryManagementService libraryManagementService = new LibraryManagementService(library, connectionBridge);
         executorService.submit(libraryManagementService);
 
-        var outputDisplay = debugMode ? new CLIOutputDisplay() : new FileOutputDisplay(outputFilePath);
-        MainMenuView mainMenuView = new MainMenuView(outputDisplay, requestQueue, responseQueue);
+        var outputDisplay = Config.getInstance().saveOutputToFile()
+                ? new FileOutputDisplay(Config.getInstance().outputFilePath())
+                : new CLIOutputDisplay();
+        MainMenuView mainMenuView = new MainMenuView(outputDisplay, connectionBridge);
         executorService.submit(mainMenuView);
 
         executorService.shutdown();
+    }
+
+    private static void loadConfigs() {
+        // Use gson to load configurations
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(configFilePath)) {
+            Gson gson = GsonProvider.getGson();
+            assert inputStream != null;
+            Reader reader = new InputStreamReader(inputStream);
+            var config = gson.fromJson(reader, Config.class);
+            Config.setInstance(config);
+            reader.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Config file '" + configFilePath + "' not found. Exiting...");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void saveLibrary(Library library) {
@@ -52,7 +69,11 @@ public class Main {
     }
 
     private static void initializeFields() {
-        assetLoader = new AssetLoader(booksDatabaseFilePath);
+        var serializer = switch (Config.getInstance().assetSerializationFormat()) {
+            case JSON -> new JsonAssetListSerializer();
+            case ProtoBuf -> new ProtoAssetListSerializer();
+        };
+        assetLoader = new AssetLoader(Config.getInstance().assetsFilePath(), serializer);
     }
 
     private static Library loadLibrary() {
@@ -60,6 +81,14 @@ public class Main {
         var library = Library.getInstance();
         library.addAllAssets(assets);
         generateTestData(library);
+
+        var searchStrategy = switch (Config.getInstance().defaultSearchStrategy()) {
+            case contains_all_words -> new ContainsAllKeysStrategy<String, String>();
+            case contains_at_least_one_word -> new ContainsAtLeastOneKeyStrategy<String, String>();
+        };
+
+        library.setInvertedIndexSearchStrategy(searchStrategy);
+
         return library;
     }
 

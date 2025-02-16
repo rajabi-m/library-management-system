@@ -10,24 +10,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
 public class LibraryManagementService implements Runnable {
     private final Library library;
-    private final BlockingQueue<Request> requestQueue;
-    private final BlockingQueue<Response<?>> responseQueue;
     private boolean serviceRunning = true;
-
+    private final ConnectionBridge connectionBridge;
     private final static Logger logger = Logger.getLogger(LibraryManagementService.class.getSimpleName());
 
     private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
-    public LibraryManagementService(Library library, BlockingQueue<Request> requestQueue, BlockingQueue<Response<?>> responseQueue) {
+    public LibraryManagementService(Library library, ConnectionBridge connectionBridge1) {
         this.library = library;
-        this.requestQueue = requestQueue;
-        this.responseQueue = responseQueue;
+        this.connectionBridge = connectionBridge1;
         initializeRequestHandlers();
     }
 
@@ -51,7 +47,7 @@ public class LibraryManagementService implements Runnable {
     public void run() {
         while (serviceRunning) {
             try {
-                Request request = requestQueue.take();
+                Request request = connectionBridge.takeRequest();
                 logger.info("Received request: " + request);
 
                 Function<Request, Response<?>> handler = requestHandlers.getOrDefault(
@@ -61,7 +57,7 @@ public class LibraryManagementService implements Runnable {
 
                 Response<?> response = handler.apply(request);
                 logger.info("Sending response: " + response);
-                responseQueue.put(response);
+                connectionBridge.addResponse(response);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -1,7 +1,6 @@
 package org.example;
 
 import org.example.model.Asset;
-import org.example.serializer.ProtoAssetListSerializer;
 import org.example.serializer.Serializer;
 
 import java.io.*;
@@ -11,9 +10,11 @@ import java.util.List;
 public class AssetLoader {
     private final String filePath;
 
-    private final Serializer<List<Asset>> serializer = new ProtoAssetListSerializer();
-    public AssetLoader(String filePath) {
+    private final Serializer<List<Asset>> serializer;
+
+    public AssetLoader(String filePath, Serializer<List<Asset>> serializer) {
         this.filePath = filePath;
+        this.serializer = serializer;
     }
 
     public void writeAssetsToFile(List<Asset> assets) {
@@ -39,11 +40,10 @@ public class AssetLoader {
 
             System.out.println("Assets loaded successfully.");
             return assets == null ? new ArrayList<>() : assets;
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println("Assets file not found. Creating a new file...");
             createAssetsFile();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return new ArrayList<>();
