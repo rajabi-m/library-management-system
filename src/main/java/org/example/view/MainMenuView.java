@@ -212,6 +212,10 @@ public class MainMenuView extends MenuView {
 
         var assetId = assetDTO.id();
 
+        if (!assetDTO.borrowable()) {
+            return "Asset is not borrowable";
+        }
+
         System.out.println("Enter return date (yyyy-mm-dd): ");
         String returnDateString = scanner.nextLine();
         LocalDate returnDate = RegexUtils.parseDate(returnDateString);
