@@ -6,8 +6,10 @@ import org.example.model.Book;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
 import org.example.model.dto.AssetDTO;
+import org.example.model.observer.AssetSubscriber;
 import org.example.service.requests.*;
 import org.example.service.response.Response;
+import org.example.util.ANSICodes;
 import org.example.util.RegexUtils;
 import org.example.view.factories.AssetFactory;
 import org.example.view.factories.BookFactory;
@@ -22,7 +24,7 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
-public class MainMenuView extends MenuView {
+public class MainMenuView extends MenuView implements AssetSubscriber {
     private static final String welcomeText = """
             welcome to the library!
             Please choose an option:
@@ -213,7 +215,7 @@ public class MainMenuView extends MenuView {
         var assetId = assetDTO.id();
 
         if (!assetDTO.borrowable()) {
-            return "Asset is not borrowable";
+            return assetNotBorrowableFlow(assetDTO);
         }
 
         System.out.println("Enter return date (yyyy-mm-dd): ");
@@ -227,6 +229,19 @@ public class MainMenuView extends MenuView {
         Response<String> response = sendRequestAndWaitForResponse(new BorrowAssetRequest(assetId, returnDate));
 
         return response.data();
+    }
+
+    private String assetNotBorrowableFlow(AssetDTO assetDTO) {
+        System.out.println("Asset is not borrowable. Do you want to subscribe to it? (y/n)");
+        String choice = scanner.nextLine();
+        if (choice.equals("y")) {
+            Response<String> response = sendRequestAndWaitForResponse(new SubscribeToAssetRequest(assetDTO.id(), this));
+            return response.data();
+        } else if (choice.equals("n")) {
+            return "Asset is not borrowable";
+        } else {
+            return "Invalid choice";
+        }
     }
 
     private String returnAssetCommand() {
@@ -283,5 +298,10 @@ public class MainMenuView extends MenuView {
         }
 
         return output.toString();
+    }
+
+    @Override
+    public void notify(String message) {
+        System.out.println(ANSICodes.GREEN + "Notification: " + ANSICodes.YELLOW + message + ANSICodes.RESET);
     }
 }

@@ -44,6 +44,7 @@ public class LibraryManagementService implements Runnable {
         requestHandlers.put(UpdateAssetRequest.class, this::updateAssetHandler);
         requestHandlers.put(GetAssetByIdRequest.class, this::getAssetByIdHandler);
         requestHandlers.put(CloseServiceRequest.class, this::closeServiceHandler);
+        requestHandlers.put(SubscribeToAssetRequest.class, this::subscribeToAssetHandler);
     }
 
     @Override
@@ -174,5 +175,15 @@ public class LibraryManagementService implements Runnable {
 
         String assetId = getAssetByIdRequest.getAssetId();
         return new Response<>(library.getAssetById(assetId));
+    }
+
+    private Response<String> subscribeToAssetHandler(Request request) {
+        if (!(request instanceof SubscribeToAssetRequest subscribeToAssetRequest)) {
+            throw new RuntimeException("Invalid request type!");
+        }
+
+        String assetId = subscribeToAssetRequest.getAssetId();
+        var subscriber = subscribeToAssetRequest.getSubscriber();
+        return new Response<>(library.subscribeToAsset(assetId, subscriber));
     }
 }

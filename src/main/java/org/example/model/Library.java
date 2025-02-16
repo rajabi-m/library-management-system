@@ -2,6 +2,7 @@ package org.example.model;
 
 import org.example.model.data_structure.InvertedIndexMap;
 import org.example.model.dto.AssetDTO;
+import org.example.model.observer.AssetSubscriber;
 import org.example.model.strategy.ContainsAtLeastOneKeyStrategy;
 import org.example.model.strategy.InvertedIndexSearchStrategy;
 
@@ -15,11 +16,13 @@ public class Library {
     private final InvertedIndexMap<String, String> invertedIndexMap;
 
     private InvertedIndexSearchStrategy<String, String> invertedIndexSearchStrategy = new ContainsAtLeastOneKeyStrategy<>();
+    private final ConcurrentHashMap<String, ArrayList<AssetSubscriber>> assetSubscribers;
 
     // Constructor
     private Library() {
         this.invertedIndexMap = new InvertedIndexMap<>();
         this.assetsMap = new ConcurrentHashMap<>();
+        this.assetSubscribers = new ConcurrentHashMap<>();
     }
 
     // Methods
@@ -147,10 +150,20 @@ public class Library {
                 return "This asset is not borrowed";
             }
 
+            notifyAssetSubscribers(asset);
+
             borrowableAsset.setStatus(AssetStatus.Exist);
             borrowableAsset.setReturnDate(BorrowableAsset.defaultReturnDate);
             return "Asset successfully brought back";
         }
+    }
+
+    private void notifyAssetSubscribers(Asset asset) {
+        var subscribers = assetSubscribers.getOrDefault(asset.getId(), new ArrayList<>());
+        for (var subscriber : subscribers) {
+            subscriber.notify("Asset with title '" + asset.getTitle() + "' is returned");
+        }
+        subscribers.clear();
     }
 
     public AssetDTO getAssetById(String assetId) {
@@ -211,5 +224,19 @@ public class Library {
 
     public void setInvertedIndexSearchStrategy(InvertedIndexSearchStrategy<String, String> invertedIndexSearchStrategy) {
         this.invertedIndexSearchStrategy = invertedIndexSearchStrategy;
+    }
+
+    public String subscribeToAsset(String assetId, AssetSubscriber subscriber) {
+        if (!assetsMap.containsKey(assetId)) {
+            return "Asset does not exist in the library!";
+        }
+
+        synchronized (assetSubscribers) {
+            if (!assetSubscribers.containsKey(assetId)) {
+                assetSubscribers.put(assetId, new ArrayList<>());
+            }
+            assetSubscribers.get(assetId).add(subscriber);
+            return "Subscribed successfully!";
+        }
     }
 }
