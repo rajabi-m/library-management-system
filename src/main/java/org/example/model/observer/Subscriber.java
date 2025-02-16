@@ -1,5 +1,5 @@
 package org.example.model.observer;
 
-public interface AssetSubscriber {
+public interface Subscriber {
     void notify(String message);
 }

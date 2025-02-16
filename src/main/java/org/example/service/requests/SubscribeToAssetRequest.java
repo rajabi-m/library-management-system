@@ -1,16 +1,16 @@
 package org.example.service.requests;
 
-import org.example.model.observer.AssetSubscriber;
+import org.example.model.observer.Subscriber;
 
 public class SubscribeToAssetRequest extends AssetIdRequest {
-    private final AssetSubscriber subscriber;
+    private final Subscriber subscriber;
 
-    public SubscribeToAssetRequest(String assetId, AssetSubscriber subscriber) {
+    public SubscribeToAssetRequest(String assetId, Subscriber subscriber) {
         super(assetId);
         this.subscriber = subscriber;
     }
 
-    public AssetSubscriber getSubscriber() {
+    public Subscriber getSubscriber() {
         return subscriber;
     }
 }

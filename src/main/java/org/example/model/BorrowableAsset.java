@@ -1,10 +1,15 @@
 package org.example.model;
 
-import java.time.LocalDate;
+import org.example.model.observer.Subscribable;
+import org.example.model.observer.Subscriber;
 
-public abstract class BorrowableAsset extends Asset {
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+public abstract class BorrowableAsset extends Asset implements Subscribable {
     private AssetStatus status;
     private LocalDate returnDate = defaultReturnDate;
+    private final ArrayList<Subscriber> subscribers = new ArrayList<>();
 
     public static final LocalDate defaultReturnDate = LocalDate.EPOCH;
 
@@ -14,7 +19,7 @@ public abstract class BorrowableAsset extends Asset {
         this.returnDate = returnDate;
     }
 
-    public BorrowableAsset(String title){
+    public BorrowableAsset(String title) {
         super(title);
         this.status = AssetStatus.Exist;
     }
@@ -35,4 +40,19 @@ public abstract class BorrowableAsset extends Asset {
         this.returnDate = returnDate;
     }
 
+    @Override
+    public void subscribe(Subscriber subscriber) {
+        subscribers.add(subscriber);
+    }
+
+    @Override
+    public void unsubscribe(Subscriber subscriber) {
+        subscribers.remove(subscriber);
+    }
+
+    @Override
+    public void notifySubscribers(String message) {
+        subscribers.forEach(subscriber -> subscriber.notify(message));
+        subscribers.clear();
+    }
 }
