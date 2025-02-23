@@ -4,7 +4,7 @@ create table users (
 	id int primary key auto_increment,
     username varchar(50) not null
 );
-
+drop table users;
 drop table books;
 
 create table books (
@@ -12,7 +12,8 @@ create table books (
     title varchar(255),
     author varchar(255),
     release_year int,
-    count int
+    count int,
+    remaining_count int
 );
 
 delete from books;
@@ -31,11 +32,11 @@ create table book_borrows (
 
 drop table book_borrows;
 
-insert into books (title, author, release_year ,count) values
-#("Art of war", "Sun Tzu", 1990, 10),
-#("How to win friends and influence people", "Carl Dige", 2014, 3),
-#("Chi migi mashti", "Nemidoonam", 2025, 2),
-("Leader Lie", "William Jones", 1922, 1)
+insert into books (title, author, release_year ,count, remaining_count) values
+("Art of war", "Sun Tzu", 1990, 10, 10),
+("How to win friends and influence people", "Carl Dige", 2014, 3, 3),
+("Chi migi mashti", "Nemidoonam", 2025, 2, 2),
+("Leader Lie", "William Jones", 1922, 1, 1)
 ;
 
 insert into users (username) values
@@ -43,9 +44,9 @@ insert into users (username) values
 ("AliReza");
 
 insert into book_borrows(user_id, book_id, return_date) values
-#(1, 7, "2025-12-12"),
-#(3, 8, "2025-11-11"),
-(3, 7, "2023-01-12");
+(1, 1, "2025-12-12"),
+(3, 2, "2025-11-11"),
+(3, 1, "2023-01-12");
 
 select * from book_borrows
 inner join users on
@@ -138,5 +139,14 @@ books.id = book_borrows.book_id;
 
 # indexing
 alter table book_borrows add index (user_id);
+
+# borrow transaction
+start transaction;
+insert into book_borrows(book_id, user_id, return_date) values (1, 1, "2025-11-11");
+    
+update books 
+set remaining_count = remaining_count - 1
+where books.id = 1;
+commit;
 
 
