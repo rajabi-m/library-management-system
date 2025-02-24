@@ -149,4 +149,22 @@ set remaining_count = remaining_count - 1
 where books.id = 1;
 commit;
 
+# trigger
+create trigger return_book_trigger before update on book_borrows
+for each row set new.return_date = if(new.is_returned, curdate(), new.return_date);
 
+drop trigger return_book_trigger;
+
+# testing trigger
+update book_borrows
+set is_returned = true
+where book_id = 1;
+
+select * from book_borrows;
+
+# view
+create view borrowed_books as
+select * from books
+inner join book_borrows
+on books.id = book_borrows.book_id
+where book_borrows.is_returned = false;
