@@ -1,10 +1,10 @@
 package test.example;
 
+import org.example.controller.ConnectionBridge;
 import org.example.controller.LibraryController;
 import org.example.model.Asset;
 import org.example.model.Book;
 import org.example.model.User;
-import org.example.service.ConnectionBridge;
 import org.example.service.requests.AddAssetRequest;
 import org.example.service.requests.BorrowAssetRequest;
 import org.example.service.requests.ReturnAssetRequest;

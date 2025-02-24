@@ -2,7 +2,6 @@ package org.example.controller;
 
 import org.example.model.Asset;
 import org.example.model.dto.AssetDTO;
-import org.example.service.ConnectionBridge;
 import org.example.service.LibraryService;
 import org.example.service.requests.*;
 import org.example.service.response.Response;

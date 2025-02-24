@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.controller;
 
 import org.example.service.requests.Request;
 import org.example.service.response.Response;

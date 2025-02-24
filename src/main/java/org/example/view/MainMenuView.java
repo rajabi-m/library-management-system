@@ -1,9 +1,9 @@
 package org.example.view;
 
+import org.example.controller.ConnectionBridge;
 import org.example.io.OutputDisplay;
 import org.example.model.*;
 import org.example.model.dto.AssetDTO;
-import org.example.service.ConnectionBridge;
 import org.example.service.requests.*;
 import org.example.service.response.Response;
 import org.example.util.ANSICodes;

@@ -1,6 +1,7 @@
 package org.example;
 
 import com.google.gson.Gson;
+import org.example.controller.ConnectionBridge;
 import org.example.controller.LibraryController;
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
@@ -12,7 +13,6 @@ import org.example.model.strategy.ContainsAtLeastOneKeyStrategy;
 import org.example.serializer.GsonProvider;
 import org.example.serializer.JsonAssetListSerializer;
 import org.example.serializer.ProtoAssetListSerializer;
-import org.example.service.ConnectionBridge;
 import org.example.service.LibraryService;
 import org.example.view.MainMenuView;
 
