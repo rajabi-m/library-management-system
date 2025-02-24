@@ -1,3 +1,4 @@
 package org.example.service.requests;
 
-public class Request{}
+public abstract class Request {
+}
