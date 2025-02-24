@@ -4,12 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileOutputDisplay implements OutputDisplay {
-    private final String filePath;
-
-    public FileOutputDisplay(String filePath) {
-        this.filePath = filePath;
-    }
+public record FileOutputDisplay(String filePath) implements OutputDisplay {
 
     @Override
     public void display(String text) {
