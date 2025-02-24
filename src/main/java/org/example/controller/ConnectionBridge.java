@@ -1,14 +1,15 @@
 package org.example.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.service.requests.Request;
 import org.example.service.response.Response;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Logger;
 
 public class ConnectionBridge {
-    private final static Logger logger = Logger.getLogger(ConnectionBridge.class.getSimpleName());
+    private final static Logger logger = LogManager.getLogger(ConnectionBridge.class.getSimpleName());
     private final BlockingQueue<Request> requestQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Response<?>> responseQueue = new LinkedBlockingQueue<>();
 

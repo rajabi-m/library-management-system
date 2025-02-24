@@ -3,5 +3,6 @@
   "assetsFilePath": "target/assets.json",
   "saveOutputToFile": false,
   "defaultSearchStrategy": "contains_all_words",
-  "assetSerializationFormat": "JSON"
+  "assetSerializationFormat": "JSON",
+  "logLevel": "warn"
 }

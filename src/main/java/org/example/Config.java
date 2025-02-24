@@ -5,7 +5,8 @@ public record Config(
         String assetsFilePath,
         boolean saveOutputToFile,
         SearchStrategy defaultSearchStrategy,
-        SerializationFormat assetSerializationFormat
+        SerializationFormat assetSerializationFormat,
+        String logLevel
 ) {
 
     private static Config instance;

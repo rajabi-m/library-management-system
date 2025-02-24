@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.model.Asset;
 import org.example.model.dto.AssetDTO;
 import org.example.service.LibraryService;
@@ -11,14 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Logger;
 
 public class LibraryController implements Runnable {
     private final LibraryService libraryService = LibraryService.getInstance();
     private boolean serviceRunning = true;
     private final ConnectionBridge connectionBridge;
-    private final static Logger logger = Logger.getLogger(LibraryController.class.getSimpleName());
-
+    private final Logger logger = LogManager.getLogger("Library Controller");
     private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
     public LibraryController(ConnectionBridge connectionBridge1) {
@@ -47,7 +47,7 @@ public class LibraryController implements Runnable {
         while (serviceRunning) {
             try {
                 Request request = connectionBridge.takeRequest();
-                logger.info("Received request: " + request);
+                logger.info("Received request: {}", request);
 
                 Function<Request, Response<?>> handler = requestHandlers.getOrDefault(
                         request.getClass(),
@@ -55,7 +55,7 @@ public class LibraryController implements Runnable {
                 );
 
                 Response<?> response = handler.apply(request);
-                logger.info("Sending response: " + response);
+                logger.info("Sending response: {}", response);
                 connectionBridge.addResponse(response);
             } catch (Exception e) {
                 throw new RuntimeException(e);
