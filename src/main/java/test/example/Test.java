@@ -1,11 +1,10 @@
 package test.example;
 
+import org.example.controller.LibraryController;
 import org.example.model.Asset;
 import org.example.model.Book;
-import org.example.model.Library;
 import org.example.model.User;
 import org.example.service.ConnectionBridge;
-import org.example.service.LibraryManagementService;
 import org.example.service.requests.AddAssetRequest;
 import org.example.service.requests.BorrowAssetRequest;
 import org.example.service.requests.ReturnAssetRequest;
@@ -20,9 +19,8 @@ public class Test {
     public static void main(String[] args) {
         // initialization
         ConnectionBridge connectionBridge = new ConnectionBridge();
-        Library library = Library.getInstance();
-        LibraryManagementService libraryManagementService = new LibraryManagementService(library, connectionBridge);
-        new Thread(libraryManagementService).start();
+        LibraryController libraryController = new LibraryController(connectionBridge);
+        new Thread(libraryController).start();
 
         // adding test data
         Asset asset = new Book("title", "author", 2021);

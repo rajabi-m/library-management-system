@@ -14,7 +14,6 @@ import org.example.view.factories.MagazineFactory;
 import org.example.view.factories.ThesisFactory;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -79,7 +78,7 @@ public class MainMenuView extends MenuView {
         System.out.println("Enter asset title: ");
         String title = scanner.nextLine();
 
-        Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAssetsByTitleRequest(title));
+        Response<List<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAssetsByTitleRequest(title));
 
         var assetDTOS = response.data();
 
@@ -91,7 +90,7 @@ public class MainMenuView extends MenuView {
     }
 
     private String getAllAssetsCommand() {
-        Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllAssetsRequest());
+        Response<List<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllAssetsRequest());
 
         var assetDTOS = response.data();
 
@@ -144,7 +143,7 @@ public class MainMenuView extends MenuView {
         System.out.println("Enter asset title: ");
         String query = scanner.nextLine();
 
-        Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new QueryAssetsRequest(query));
+        Response<List<AssetDTO>> response = sendRequestAndWaitForResponse(new QueryAssetsRequest(query));
 
         var assets = response.data();
 
@@ -177,7 +176,7 @@ public class MainMenuView extends MenuView {
         System.out.println("Enter asset type: ");
         String type = scanner.nextLine();
 
-        Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAssetsByTypeRequest(type));
+        Response<List<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAssetsByTypeRequest(type));
         var assetDTOS = response.data();
 
         if (assetDTOS.isEmpty()) {
@@ -241,8 +240,8 @@ public class MainMenuView extends MenuView {
     }
 
     private String getAllBorrowableAssetsCommand() {
-        Response<ArrayList<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllBorrowableAssetsRequest());
-        ArrayList<AssetDTO> borrowableAssets = response.data();
+        Response<List<AssetDTO>> response = sendRequestAndWaitForResponse(new GetAllBorrowableAssetsRequest());
+        List<AssetDTO> borrowableAssets = response.data();
 
         if (borrowableAssets.isEmpty()) {
             return "No borrowable assets found";

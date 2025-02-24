@@ -1,28 +1,28 @@
-package org.example.service;
+package org.example.controller;
 
 import org.example.model.Asset;
-import org.example.model.Library;
 import org.example.model.dto.AssetDTO;
+import org.example.service.ConnectionBridge;
+import org.example.service.LibraryService;
 import org.example.service.requests.*;
 import org.example.service.response.Response;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class LibraryManagementService implements Runnable {
-    private final Library library;
+public class LibraryController implements Runnable {
+    private final LibraryService libraryService = LibraryService.getInstance();
     private boolean serviceRunning = true;
     private final ConnectionBridge connectionBridge;
-    private final static Logger logger = Logger.getLogger(LibraryManagementService.class.getSimpleName());
+    private final static Logger logger = Logger.getLogger(LibraryController.class.getSimpleName());
 
     private final Map<Class<? extends Request>, Function<Request, Response<?>>> requestHandlers = new HashMap<>();
 
-    public LibraryManagementService(Library library, ConnectionBridge connectionBridge1) {
-        this.library = library;
+    public LibraryController(ConnectionBridge connectionBridge1) {
         this.connectionBridge = connectionBridge1;
         initializeRequestHandlers();
     }
@@ -76,7 +76,7 @@ public class LibraryManagementService implements Runnable {
         }
 
         Asset asset = addAssetRequest.getAsset();
-        return new Response<>(library.addAsset(asset));
+        return Response.of(libraryService.addAsset(asset));
     }
 
     private Response<String> removeAssetHandler(Request request) {
@@ -85,50 +85,50 @@ public class LibraryManagementService implements Runnable {
         }
 
         String assetId = removeAssetRequest.getAssetId();
-        return new Response<>(library.removeAssetById(assetId));
+        return Response.of(libraryService.removeAssetById(assetId));
     }
 
-    private Response<ArrayList<AssetDTO>> getAllAssetsHandler(Request request) {
+    private Response<List<AssetDTO>> getAllAssetsHandler(Request request) {
         if (!(request instanceof GetAllAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
-        return new Response<>(library.getAllAssets());
+        return Response.of(libraryService.getAllAssets());
     }
 
-    private Response<ArrayList<AssetDTO>> getAssetsByTitleHandler(Request request) {
+    private Response<List<AssetDTO>> getAssetsByTitleHandler(Request request) {
         if (!(request instanceof GetAssetsByTitleRequest getAssetsByTitleRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
         String title = getAssetsByTitleRequest.getTitle();
-        return new Response<>(library.getAssetsByTitle(title));
+        return Response.of(libraryService.getAssetsByTitle(title));
     }
 
-    private Response<ArrayList<AssetDTO>> getAllBorrowableAssetsHandler(Request request) {
+    private Response<List<AssetDTO>> getAllBorrowableAssetsHandler(Request request) {
         if (!(request instanceof GetAllBorrowableAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
-        return new Response<>(library.getAllBorrowableAssets());
+        return Response.of(libraryService.getAllBorrowableAssets());
     }
 
-    private Response<ArrayList<AssetDTO>> getAssetsByTypeRequest(Request request) {
+    private Response<List<AssetDTO>> getAssetsByTypeRequest(Request request) {
         if (!(request instanceof GetAssetsByTypeRequest getAssetsByTypeRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
         String type = getAssetsByTypeRequest.getAssetType();
-        return new Response<>(library.getAssetsByType(type));
+        return Response.of(libraryService.getAssetsByType(type));
     }
 
-    private Response<ArrayList<AssetDTO>> queryAssetsHandler(Request request) {
+    private Response<List<AssetDTO>> queryAssetsHandler(Request request) {
         if (!(request instanceof QueryAssetsRequest queryAssetsRequest)) {
             throw new RuntimeException("Invalid request type!");
         }
 
         String query = queryAssetsRequest.getQuery();
-        return new Response<>(library.queryAssets(query));
+        return Response.of(libraryService.queryAssets(query));
     }
 
     private Response<String> borrowAssetHandler(Request request) {
@@ -138,7 +138,7 @@ public class LibraryManagementService implements Runnable {
 
         String assetId = borrowAssetRequest.getAssetId();
         LocalDate returnDate = borrowAssetRequest.getReturnDate();
-        return new Response<>(library.borrowAssetById(assetId, returnDate));
+        return Response.of(libraryService.borrowAssetById(assetId, returnDate));
     }
 
     private Response<String> returnAssetHandler(Request request) {
@@ -147,7 +147,7 @@ public class LibraryManagementService implements Runnable {
         }
 
         String assetId = returnAssetRequest.getAssetId();
-        return new Response<>(library.returnAssetById(assetId));
+        return Response.of(libraryService.returnAssetById(assetId));
     }
 
     private Response<String> updateAssetHandler(Request request) {
@@ -156,8 +156,8 @@ public class LibraryManagementService implements Runnable {
         }
 
         String assetId = updateAssetRequest.getAssetId();
-        Asset asset = updateAssetRequest.getUpdatedAsset();
-        return new Response<>(library.updateAssetByAssetId(assetId, asset));
+        Asset updatedAsset = updateAssetRequest.getUpdatedAsset();
+        return Response.of(libraryService.updateAssetById(assetId, updatedAsset));
     }
 
     private Response<String> handleUnsupportedRequest(Request request) {
@@ -170,7 +170,7 @@ public class LibraryManagementService implements Runnable {
         }
 
         String assetId = getAssetByIdRequest.getAssetId();
-        return new Response<>(library.getAssetById(assetId));
+        return Response.of(libraryService.getAssetById(assetId));
     }
 
     private Response<String> subscribeToAssetHandler(Request request) {
@@ -180,6 +180,6 @@ public class LibraryManagementService implements Runnable {
 
         String assetId = subscribeToAssetRequest.getAssetId();
         var subscriber = subscribeToAssetRequest.getSubscriber();
-        return new Response<>(library.subscribeToAsset(assetId, subscriber));
+        return Response.of(libraryService.subscribeToAssetById(assetId, subscriber));
     }
 }

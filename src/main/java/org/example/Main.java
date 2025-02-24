@@ -1,10 +1,10 @@
 package org.example;
 
 import com.google.gson.Gson;
+import org.example.controller.LibraryController;
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
 import org.example.model.Book;
-import org.example.model.Library;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
 import org.example.model.strategy.ContainsAllKeysStrategy;
@@ -13,7 +13,7 @@ import org.example.serializer.GsonProvider;
 import org.example.serializer.JsonAssetListSerializer;
 import org.example.serializer.ProtoAssetListSerializer;
 import org.example.service.ConnectionBridge;
-import org.example.service.LibraryManagementService;
+import org.example.service.LibraryService;
 import org.example.view.MainMenuView;
 
 import java.io.*;
@@ -29,15 +29,15 @@ public class Main {
     public static void main(String[] args) {
         loadConfigs();
         initializeFields();
-        var library = loadLibrary();
+        loadAssets();
 
         // Create shutdown hook to save program data
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> saveLibrary(library)));
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::saveAssets));
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        LibraryManagementService libraryManagementService = new LibraryManagementService(library, connectionBridge);
-        executorService.submit(libraryManagementService);
+        LibraryController libraryController = new LibraryController(connectionBridge);
+        executorService.submit(libraryController);
 
         var outputDisplay = Config.getInstance().saveOutputToFile()
                 ? new FileOutputDisplay(Config.getInstance().outputFilePath())
@@ -64,8 +64,9 @@ public class Main {
         }
     }
 
-    private static void saveLibrary(Library library) {
-        assetLoader.writeAssetsToFile(library.getAllAssetObjects());
+    private static void saveAssets() {
+        var libraryService = LibraryService.getInstance();
+        assetLoader.writeAssetsToFile(libraryService.getAllAssetObjects());
     }
 
     private static void initializeFields() {
@@ -76,24 +77,22 @@ public class Main {
         assetLoader = new AssetLoader(Config.getInstance().assetsFilePath(), serializer);
     }
 
-    private static Library loadLibrary() {
+    private static void loadAssets() {
         var assets = assetLoader.readAssetsFromFile();
-        var library = Library.getInstance();
-        library.addAllAssets(assets);
-        generateTestData(library);
+        var libraryService = LibraryService.getInstance();
+        libraryService.loadAssets(assets);
+        generateTestData(libraryService);
 
         var searchStrategy = switch (Config.getInstance().defaultSearchStrategy()) {
             case contains_all_words -> new ContainsAllKeysStrategy<String, String>();
             case contains_at_least_one_word -> new ContainsAtLeastOneKeyStrategy<String, String>();
         };
 
-        library.setInvertedIndexSearchStrategy(searchStrategy);
-
-        return library;
+        libraryService.setInvertedIndexSearchStrategy(searchStrategy);
     }
 
-    private static void generateTestData(Library library) {
-        if (!library.getAllAssetObjects().isEmpty()) return;
+    private static void generateTestData(LibraryService libraryService) {
+        if (!libraryService.getAllAssets().isEmpty()) return;
 
         var book1 = new Book("Art of War", "Sun Tzu", 1990);
         var book2 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1925);
@@ -108,17 +107,17 @@ public class Main {
         var thesis3 = new Thesis("The Interpretation of Dreams", "Sigmund Freud", "None", "Psychology", "1899");
         var thesis4 = new Thesis("The Wealth of Nations", "Adam Smith", "None", "Economics", "1776");
 
-        library.addAsset(book1);
-        library.addAsset(book2);
-        library.addAsset(book3);
-        library.addAsset(book4);
-        library.addAsset(magazine1);
-        library.addAsset(magazine2);
-        library.addAsset(magazine3);
-        library.addAsset(magazine4);
-        library.addAsset(thesis1);
-        library.addAsset(thesis2);
-        library.addAsset(thesis3);
-        library.addAsset(thesis4);
+        libraryService.addAsset(book1);
+        libraryService.addAsset(book2);
+        libraryService.addAsset(book3);
+        libraryService.addAsset(book4);
+        libraryService.addAsset(magazine1);
+        libraryService.addAsset(magazine2);
+        libraryService.addAsset(magazine3);
+        libraryService.addAsset(magazine4);
+        libraryService.addAsset(thesis1);
+        libraryService.addAsset(thesis2);
+        libraryService.addAsset(thesis3);
+        libraryService.addAsset(thesis4);
     }
 }
