@@ -6,10 +6,7 @@ public record Config(
         boolean saveOutputToFile,
         SearchStrategy defaultSearchStrategy,
         SerializationFormat assetSerializationFormat,
-        String logLevel,
-        String databaseUrl,
-        String databaseUser,
-        String databasePassword
+        String logLevel
 ) {
 
     private static Config instance;

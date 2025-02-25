@@ -90,10 +90,10 @@ public class Main {
     private static void connectToDataBase() {
         try {
             DefaultAssetRepository.getInstance().connectToDatabase(
-                    Config.getInstance().databaseUrl(),
-                    Config.getInstance().databaseUser(),
-                    Config.getInstance().databasePassword()
-            );
+                    "jdbc:mysql://localhost:3306/basic_library_db",
+                    "root",
+                    ""
+            ); // TODO: Add database URL, username, and password to config
         } catch (SQLException e) {
             throw new CannotConnectToDatabaseException(e.getMessage());
         }
