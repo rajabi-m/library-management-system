@@ -7,6 +7,7 @@ import org.example.service.response.Response;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectionBridge {
     private final static Logger logger = LogManager.getLogger(ConnectionBridge.class.getSimpleName());
@@ -33,7 +34,7 @@ public class ConnectionBridge {
         try {
             logger.info("Sending request: " + request);
             requestQueue.put(request);
-            Response<?> response = responseQueue.take();
+            Response<?> response = responseQueue.poll(1, TimeUnit.SECONDS);
             logger.info("Received response: " + response);
 
             @SuppressWarnings("unchecked")
