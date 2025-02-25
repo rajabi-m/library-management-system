@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.example.controller.ConnectionBridge;
 import org.example.controller.LibraryController;
+import org.example.exception.CannotConnectToDatabaseException;
 import org.example.exception.ConfigFileNotFoundException;
 import org.example.exception.GlobalExceptionHandler;
 import org.example.exception.InvalidConfigFileFormatException;
@@ -14,8 +15,7 @@ import org.example.io.FileOutputDisplay;
 import org.example.model.Book;
 import org.example.model.Magazine;
 import org.example.model.Thesis;
-import org.example.model.strategy.ContainsAllKeysStrategy;
-import org.example.model.strategy.ContainsAtLeastOneKeyStrategy;
+import org.example.repository.DefaultAssetRepository;
 import org.example.serializer.GsonProvider;
 import org.example.serializer.JsonAssetListSerializer;
 import org.example.serializer.ProtoAssetListSerializer;
@@ -23,6 +23,7 @@ import org.example.service.LibraryService;
 import org.example.view.MainMenuView;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,10 +38,8 @@ public class Main {
         loadConfigs();
         Configurator.setRootLevel(Level.valueOf(Config.getInstance().logLevel()));
         initializeFields();
-        loadAssets();
-
-        // Create shutdown hook to save program data
-        Runtime.getRuntime().addShutdownHook(new Thread(Main::saveAssets));
+        connectToDataBase();
+        generateTestDataIfNeeded(LibraryService.getInstance());
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
@@ -88,21 +87,19 @@ public class Main {
         assetLoader = new AssetLoader(Config.getInstance().assetsFilePath(), serializer);
     }
 
-    private static void loadAssets() {
-        var assets = assetLoader.readAssetsFromFile();
-        var libraryService = LibraryService.getInstance();
-        libraryService.loadAssets(assets);
-        generateTestData(libraryService);
-
-        var searchStrategy = switch (Config.getInstance().defaultSearchStrategy()) {
-            case contains_all_words -> new ContainsAllKeysStrategy<String, String>();
-            case contains_at_least_one_word -> new ContainsAtLeastOneKeyStrategy<String, String>();
-        };
-
-        libraryService.setInvertedIndexSearchStrategy(searchStrategy);
+    private static void connectToDataBase() {
+        try {
+            DefaultAssetRepository.getInstance().connectToDatabase(
+                    "jdbc:mysql://localhost:3306/basic_library_db",
+                    "root",
+                    ""
+            ); // TODO: Add database URL, username, and password to config
+        } catch (SQLException e) {
+            throw new CannotConnectToDatabaseException(e.getMessage());
+        }
     }
 
-    private static void generateTestData(LibraryService libraryService) {
+    private static void generateTestDataIfNeeded(LibraryService libraryService) {
         if (!libraryService.getAllAssets().isEmpty()) return;
 
         var book1 = new Book("Art of War", "Sun Tzu", 1990);
