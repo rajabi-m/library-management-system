@@ -4,5 +4,8 @@
   "saveOutputToFile": false,
   "defaultSearchStrategy": "contains_all_words",
   "assetSerializationFormat": "JSON",
-  "logLevel": "warn"
+  "logLevel": "warn",
+  "databaseUrl": "jdbc:mysql://localhost:3306/basic_library_db",
+  "databaseUser": "root",
+  "databasePassword": ""
 }
