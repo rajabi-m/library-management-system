@@ -15,7 +15,7 @@ public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
             case ConfigFileNotFoundException e -> {
                 logger.error("Config file not found at {}", e.getFilePath());
             }
-            case InvalidConfigFileFormatException ignored -> {
+            case InvalidConfigFileFormatException e -> {
                 logger.error("Invalid config file format");
             }
             default -> logger.error("unhandled system exception happened", throwable);
