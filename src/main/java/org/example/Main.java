@@ -1,8 +1,14 @@
 package org.example;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.example.controller.ConnectionBridge;
 import org.example.controller.LibraryController;
+import org.example.exception.ConfigFileNotFoundException;
+import org.example.exception.GlobalExceptionHandler;
+import org.example.exception.InvalidConfigFileFormatException;
 import org.example.io.CLIOutputDisplay;
 import org.example.io.FileOutputDisplay;
 import org.example.model.Book;
@@ -27,7 +33,9 @@ public class Main {
     private final static ConnectionBridge connectionBridge = new ConnectionBridge();
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         loadConfigs();
+        Configurator.setRootLevel(Level.valueOf(Config.getInstance().logLevel()));
         initializeFields();
         loadAssets();
 
@@ -46,6 +54,7 @@ public class Main {
         executorService.submit(mainMenuView);
 
         executorService.shutdown();
+        executorService.close();
     }
 
     private static void loadConfigs() {
@@ -57,8 +66,10 @@ public class Main {
             var config = gson.fromJson(reader, Config.class);
             Config.setInstance(config);
             reader.close();
+        } catch (JsonSyntaxException e) {
+            throw new InvalidConfigFileFormatException();
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Config file '" + configFilePath + "' not found. Exiting...");
+            throw new ConfigFileNotFoundException(configFilePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

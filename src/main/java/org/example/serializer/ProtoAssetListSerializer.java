@@ -2,6 +2,7 @@ package org.example.serializer;
 
 import com.example.model.proto.ProtoMessages;
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.example.exception.InvalidAssetFileFormatException;
 import org.example.model.Asset;
 import org.example.model.Book;
 import org.example.model.Magazine;
@@ -45,7 +46,7 @@ public class ProtoAssetListSerializer implements Serializer<List<Asset>> {
     }
 
     @Override
-    public List<Asset> deserialize(byte[] data) {
+    public List<Asset> deserialize(byte[] data) throws InvalidAssetFileFormatException {
         try {
             ProtoMessages.AssetList assetList = ProtoMessages.AssetList.parseFrom(data);
             ArrayList<Asset> assets = new ArrayList<>();
@@ -58,7 +59,7 @@ public class ProtoAssetListSerializer implements Serializer<List<Asset>> {
             }
             return assets;
         } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException("Failed to deserialize data", e);
+            throw new InvalidAssetFileFormatException("Invalid Proto format");
         }
     }
 }
