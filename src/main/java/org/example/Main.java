@@ -22,7 +22,10 @@ import org.example.serializer.ProtoAssetListSerializer;
 import org.example.service.LibraryService;
 import org.example.view.MainMenuView;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -61,15 +64,15 @@ public class Main {
         // Use gson to load configurations
         try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(configFilePath)) {
             Gson gson = GsonProvider.getGson();
-            assert inputStream != null;
+            if (inputStream == null) {
+                throw new ConfigFileNotFoundException(configFilePath);
+            }
             Reader reader = new InputStreamReader(inputStream);
             var config = gson.fromJson(reader, Config.class);
             Config.setInstance(config);
             reader.close();
         } catch (JsonSyntaxException e) {
             throw new InvalidConfigFileFormatException();
-        } catch (FileNotFoundException e) {
-            throw new ConfigFileNotFoundException(configFilePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
